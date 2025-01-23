@@ -7,6 +7,8 @@ use DateInterval;
 use DateTime;
 
 /**
+ * Represents a single cached item in {@see MemoryCache}
+ *
  * @internal
  */
 final readonly class MemoryCacheItem

@@ -6,6 +6,11 @@ namespace Konecnyjakub\Cache\Simple;
 use DateInterval;
 use Psr\SimpleCache\CacheInterface;
 
+/**
+ * In memory cache
+ *
+ * Stores values during the current request
+ */
 final class MemoryCache extends BaseCache
 {
     /** @var array<string, MemoryCacheItem> */

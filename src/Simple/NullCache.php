@@ -5,6 +5,11 @@ namespace Konecnyjakub\Cache\Simple;
 
 use DateInterval;
 
+/**
+ * Null cache
+ *
+ * Does not store any values. Can be used to disable caching
+ */
 final class NullCache extends BaseCache
 {
     protected function doGet(string $key): mixed
