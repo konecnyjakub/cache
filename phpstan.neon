@@ -1,0 +1,12 @@
+includes:
+    - vendor/phpstan/phpstan-strict-rules/rules.neon
+    - vendor/phpstan/phpstan-deprecation-rules/rules.neon
+parameters:
+    level: 10
+    paths:
+        - src
+        - tests
+    excludePaths:
+        - %rootDir%/../../../tests/temp/*
+    treatPhpDocTypesAsCertain: false
+    ignoreErrors:

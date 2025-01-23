@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<project name="Cache" basedir="." default="test">
+    <target name="test">
+        <exec executable="composer" logoutput="true" passthru="true" checkreturn="true">
+            <arg value="update"/>
+            <arg value="--prefer-dist"/>
+            <arg value="--no-progress"/>
+            <arg value="--no-interaction"/>
+        </exec>
+        <if>
+            <not>
+                <isset property="env.REPORTS"/>
+            </not>
+            <then>
+                <exec executable="vendor/bin/parallel-lint" logoutput="true" passthru="true" checkreturn="true">
+                    <arg path="src"/>
+                    <arg path="tests"/>
+                    <arg value="-e"/>
+                    <arg value="php"/>
+                    <arg value="--colors"/>
+                    <arg value="--exclude"/>
+                    <arg path="tests/temp"/>
+                </exec>
+                <exec executable="vendor/bin/phpcs" logoutput="true" passthru="true" checkreturn="true">
+                    <arg value="."/>
+                    <arg value="--colors"/>
+                </exec>
+            </then>
+        </if>
+        <if>
+            <isset property="env.REPORTS"/>
+            <then>
+                <exec executable="vendor/bin/phpstan" logoutput="true" passthru="true" checkreturn="true">
+                    <arg line="analyze --error-format=gitlab | tee phpstan.json"/>
+                </exec>
+            </then>
+            <else>
+                <exec executable="vendor/bin/phpstan" logoutput="true" passthru="true" checkreturn="true">
+                    <arg value="analyze"/>
+                </exec>
+            </else>
+        </if>
+        <if>
+            <isset property="env.REPORTS"/>
+            <then>
+                <exec executable="vendor/bin/mytester" logoutput="true" passthru="true" checkreturn="true">
+                    <arg value="--colors"/>
+                    <arg value="--resultsFormat"/>
+                    <arg value="junit"/>
+                    <arg value="--coverageFormat"/>
+                    <arg value="cobertura"/>
+                </exec>
+            </then>
+            <else>
+                <exec executable="vendor/bin/mytester" logoutput="true" passthru="true" checkreturn="true">
+                    <arg value="--colors"/>
+                </exec>
+            </else>
+        </if>
+    </target>
+</project>

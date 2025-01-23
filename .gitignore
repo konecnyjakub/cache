@@ -1,0 +1,18 @@
+# IDE settings
+/nbproject/
+/.idea/
+
+# Dependencies
+/vendor/
+/composer.lock
+
+# Temp files for tests
+temp/
+
+# Errors in tests
+*.errors
+
+# Generated reports
+/coverage.*
+/junit.xml
+/phpstan.json

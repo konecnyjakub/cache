@@ -1,0 +1,9 @@
+/tests              export-ignore
+.git*               export-ignore
+/phpstan.neon       export-ignore
+/phpcs.xml          export-ignore
+/build.xml          export-ignore
+/RELEASE_NOTES      export-ignore
+.editorconfig       export-ignore
+
+*.php               text eol=lf
