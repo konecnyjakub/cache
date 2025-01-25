@@ -14,7 +14,6 @@ jobs:
                     - '8.4'
                 os:
                     - ubuntu-latest
-                    - windows-latest
         services:
             memcached:
                 image: memcached:1-alpine
