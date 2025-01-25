@@ -7,26 +7,26 @@ use DateInterval;
 use MyTester\Attributes\TestSuite;
 use MyTester\TestCase;
 
-#[TestSuite("MemoryCacheItem")]
-final class MemoryCacheItemTest extends TestCase
+#[TestSuite("CacheItem")]
+final class CacheItemTest extends TestCase
 {
     public function testIsExpired(): void
     {
-        $item = new MemoryCacheItem("abc", -1);
+        $item = new CacheItem("abc", -1);
         $this->assertTrue($item->isExpired());
 
-        $item = new MemoryCacheItem("abc", 30);
+        $item = new CacheItem("abc", 30);
         $this->assertFalse($item->isExpired());
 
-        $item = new MemoryCacheItem("abc", null);
+        $item = new CacheItem("abc", null);
         $this->assertFalse($item->isExpired());
 
-        $item = new MemoryCacheItem("abc", DateInterval::createFromDateString("30 seconds"));
+        $item = new CacheItem("abc", DateInterval::createFromDateString("30 seconds"));
         $this->assertFalse($item->isExpired());
 
         $dateInterval = DateInterval::createFromDateString("1 second");
         $dateInterval->invert = 1;
-        $item = new MemoryCacheItem("abc", $dateInterval);
+        $item = new CacheItem("abc", $dateInterval);
         $this->assertTrue($item->isExpired());
     }
 }

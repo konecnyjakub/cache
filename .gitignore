@@ -16,3 +16,6 @@ temp/
 /coverage.*
 /junit.xml
 /phpstan.json
+
+# Generated cache in tests
+/tests/Simple/fileCache/

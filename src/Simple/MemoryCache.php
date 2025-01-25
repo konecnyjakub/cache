@@ -4,7 +4,6 @@ declare(strict_types=1);
 namespace Konecnyjakub\Cache\Simple;
 
 use DateInterval;
-use Psr\SimpleCache\CacheInterface;
 
 /**
  * In memory cache
@@ -13,7 +12,7 @@ use Psr\SimpleCache\CacheInterface;
  */
 final class MemoryCache extends BaseCache
 {
-    /** @var array<string, MemoryCacheItem> */
+    /** @var array<string, CacheItem> */
     private array $items = [];
 
     protected function doGet(string $key): mixed
@@ -23,7 +22,7 @@ final class MemoryCache extends BaseCache
 
     protected function doSet(string $key, mixed $value, DateInterval|int|null $ttl = null): bool
     {
-        $this->items[$key] = new MemoryCacheItem(is_object($value) ? clone $value : $value, $ttl);
+        $this->items[$key] = new CacheItem($value, $ttl);
         return true;
     }
 

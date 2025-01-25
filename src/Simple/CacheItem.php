@@ -7,16 +7,19 @@ use DateInterval;
 use DateTime;
 
 /**
- * Represents a single cached item in {@see MemoryCache}
+ * Represents a single cached item
  *
  * @internal
  */
-final readonly class MemoryCacheItem
+final readonly class CacheItem
 {
+    public mixed $value;
+
     public ?int $expiresAt;
 
-    public function __construct(public mixed $value, DateInterval|int|null $ttl = null)
+    public function __construct(mixed $value, DateInterval|int|null $ttl = null)
     {
+        $this->value = is_object($value) ? clone $value : $value;
         $this->expiresAt = match (true) {
             $ttl === null => $ttl,
             is_int($ttl) => time() + $ttl,
