@@ -6,7 +6,7 @@ namespace Konecnyjakub\Cache\Simple;
 use DateInterval;
 
 /**
- * Null cache
+ * Simle null cache
  *
  * Does not store any values. Can be used to disable caching
  */

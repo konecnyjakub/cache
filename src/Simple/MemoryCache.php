@@ -6,7 +6,7 @@ namespace Konecnyjakub\Cache\Simple;
 use DateInterval;
 
 /**
- * In memory cache
+ * Simple in memory cache
  *
  * Stores values during the current request
  */
