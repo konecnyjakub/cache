@@ -136,6 +136,8 @@ $cache1->has("two"); // false
 $cache2->has("two"); // true
 ```
 
+Warning: if you use both an instance of ApcuCache without namespace and an instance with namespace, calling the clear method on instance without namespace clears everything in the apcu cache, even values saved from instances with namespace. For this reason we recommend either using only one instance (without namespace) or multiple instances but with different namespace for each of them.
+
 #### More engines?
 
 There are more ways to cache things, it is possible that more engines will be added in future versions. Likely candidates are Redis and memcached.
