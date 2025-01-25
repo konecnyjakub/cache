@@ -6,7 +6,10 @@
         "cache",
         "caching",
         "simple cache",
-        "psr-16"
+        "psr-16",
+        "file",
+        "filesystem",
+        "memory"
     ],
     "authors": [
         {
