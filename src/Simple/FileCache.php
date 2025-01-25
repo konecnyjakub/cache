@@ -109,12 +109,18 @@ final class FileCache extends BaseCache
             ($this->namespace !== "" ? $this->namespace . DIRECTORY_SEPARATOR : "");
     }
 
-    private function getFilePath(string $key): string
+    /**
+     * @internal
+     */
+    public function getFilePath(string $key): string
     {
         return $this->getFullPath() . $key . self::CACHE_FILE_EXTENSION;
     }
 
-    private function getMetaFilePath(string $key): string
+    /**
+     * @internal
+     */
+    public function getMetaFilePath(string $key): string
     {
         return $this->getFullPath() . $key . self::META_FILE_EXTENSION;
     }

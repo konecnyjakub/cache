@@ -23,18 +23,26 @@ final class FileCacheTest extends TestCase
 
         $this->assertFalse($cache->has($key));
         $this->assertSame($default, $cache->get($key, $default));
+        $this->assertFalse(file_exists($cache->getFilePath($key)));
+        $this->assertFalse(file_exists($cache->getMetaFilePath($key)));
 
         $cache->set($key, $value, -1);
         $this->assertFalse($cache->has($key));
         $this->assertSame($default, $cache->get($key, $default));
+        $this->assertTrue(file_exists($cache->getFilePath($key)));
+        $this->assertTrue(file_exists($cache->getMetaFilePath($key)));
 
         $cache->set($key, $value, 30);
         $this->assertTrue($cache->has($key));
         $this->assertSame($value, $cache->get($key, $default));
+        $this->assertTrue(file_exists($cache->getFilePath($key)));
+        $this->assertTrue(file_exists($cache->getMetaFilePath($key)));
 
         $cache->delete($key);
         $this->assertFalse($cache->has($key));
         $this->assertSame($default, $cache->get($key, $default));
+        $this->assertFalse(file_exists($cache->getFilePath($key)));
+        $this->assertFalse(file_exists($cache->getMetaFilePath($key)));
     }
 
     public function testMultiKeysProcess(): void
@@ -52,6 +60,10 @@ final class FileCacheTest extends TestCase
             [$key1 => $default, $key2 => $default, ],
             $cache->getMultiple([$key1, $key2, ], $default)
         );
+        $this->assertFalse(file_exists($cache->getFilePath($key1)));
+        $this->assertFalse(file_exists($cache->getMetaFilePath($key1)));
+        $this->assertFalse(file_exists($cache->getFilePath($key2)));
+        $this->assertFalse(file_exists($cache->getMetaFilePath($key2)));
 
         $cache->setMultiple([$key1 => $value1, $key2 => $value2, ], -1);
         $this->assertFalse($cache->has($key2));
@@ -59,6 +71,10 @@ final class FileCacheTest extends TestCase
             [$key1 => $default, $key2 => $default, ],
             $cache->getMultiple([$key1, $key2, ], $default)
         );
+        $this->assertTrue(file_exists($cache->getFilePath($key1)));
+        $this->assertTrue(file_exists($cache->getMetaFilePath($key1)));
+        $this->assertTrue(file_exists($cache->getFilePath($key2)));
+        $this->assertTrue(file_exists($cache->getMetaFilePath($key2)));
 
         $cache->setMultiple([$key1 => $value1, $key2 => $value2, ], 30);
         $this->assertTrue($cache->has($key1));
@@ -67,6 +83,10 @@ final class FileCacheTest extends TestCase
             [$key1 => $value1, $key2 => $value2, ],
             $cache->getMultiple([$key1, $key2, ], $default)
         );
+        $this->assertTrue(file_exists($cache->getFilePath($key1)));
+        $this->assertTrue(file_exists($cache->getMetaFilePath($key1)));
+        $this->assertTrue(file_exists($cache->getFilePath($key2)));
+        $this->assertTrue(file_exists($cache->getMetaFilePath($key2)));
 
         $cache->deleteMultiple([$key1, $key2, ]);
         $this->assertFalse($cache->has($key1));
@@ -75,8 +95,16 @@ final class FileCacheTest extends TestCase
             [$key1 => $default, $key2 => $default, ],
             $cache->getMultiple([$key1, $key2, ], $default)
         );
+        $this->assertFalse(file_exists($cache->getFilePath($key1)));
+        $this->assertFalse(file_exists($cache->getMetaFilePath($key1)));
+        $this->assertFalse(file_exists($cache->getFilePath($key2)));
+        $this->assertFalse(file_exists($cache->getMetaFilePath($key2)));
 
         $cache->setMultiple([$key1 => $value1, $key2 => $value2, ], 30);
+        $this->assertTrue(file_exists($cache->getFilePath($key1)));
+        $this->assertTrue(file_exists($cache->getMetaFilePath($key1)));
+        $this->assertTrue(file_exists($cache->getFilePath($key2)));
+        $this->assertTrue(file_exists($cache->getMetaFilePath($key2)));
         $cache->clear();
         $this->assertFalse($cache->has($key1));
         $this->assertFalse($cache->has($key2));
@@ -84,6 +112,10 @@ final class FileCacheTest extends TestCase
             [$key1 => $default, $key2 => $default, ],
             $cache->getMultiple([$key1, $key2, ], $default)
         );
+        $this->assertFalse(file_exists($cache->getFilePath($key1)));
+        $this->assertFalse(file_exists($cache->getMetaFilePath($key1)));
+        $this->assertFalse(file_exists($cache->getFilePath($key2)));
+        $this->assertFalse(file_exists($cache->getMetaFilePath($key2)));
     }
 
     public function testDefaultTtl(): void
