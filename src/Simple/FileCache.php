@@ -67,7 +67,9 @@ final class FileCache extends BaseCache
 
     protected function doDelete(string $key): bool
     {
-        return @unlink($this->getFilePath($key)); // phpcs:ignore Generic.PHP.NoSilencedErrors
+        $result = @unlink($this->getFilePath($key)); // phpcs:ignore Generic.PHP.NoSilencedErrors
+        $result = $result && @unlink($this->getMetaFilePath($key)); // phpcs:ignore Generic.PHP.NoSilencedErrors
+        return $result;
     }
 
     public function clear(): bool
