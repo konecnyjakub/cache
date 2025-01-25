@@ -86,6 +86,19 @@ final class FileCacheTest extends TestCase
         );
     }
 
+    public function testDefaultTtl(): void
+    {
+        $key = "ttl";
+        $value = "abc";
+        $cache = new MemoryCache(defaultTtl: -1);
+
+        $cache->set($key, $value);
+        $this->assertFalse($cache->has($key));
+
+        $cache->set($key, $value, 30);
+        $this->assertTrue($cache->has($key));
+    }
+
     public function testExceptions(): void
     {
         $this->assertThrowsException(function () {

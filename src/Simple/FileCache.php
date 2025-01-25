@@ -18,9 +18,13 @@ final class FileCache extends BaseCache
 
     private readonly string $directory;
 
+    /**
+     * @param int|null $defaultTtl Default life time in seconds for items if not provided for a specific item
+     */
     public function __construct(
         string $directory,
         private readonly string $namespace = "",
+        private readonly ?int $defaultTtl = null,
         private readonly IItemValueSerializer $serializer = new PhpSerializer()
     ) {
         if (!is_dir($directory) || !is_writable($directory)) {
@@ -42,7 +46,7 @@ final class FileCache extends BaseCache
 
     protected function doSet(string $key, mixed $value, \DateInterval|int|null $ttl = null): bool
     {
-        $item = new CacheItem($value, $ttl);
+        $item = new CacheItem($value, $ttl ?? $this->defaultTtl);
         $result = (bool) file_put_contents(
             $this->getFilePath($key),
             $this->serializer->serialize($item->value),
