@@ -138,6 +138,23 @@ $cache2->has("two"); // true
 
 Warning: if you use both an instance of ApcuCache without namespace and an instance with namespace, calling the clear method on instance without namespace clears everything in the apcu cache, even values saved from instances with namespace. For this reason we recommend either using only one instance (without namespace) or multiple instances but with different namespace for each of them.
 
+#### Memcached
+
+MemcachedCache is an advanced cache engine, it stores values on a memcached server. It requires PHP extension memcached an a memcached server. It supports setting default lifetime for items.
+
+```php
+<?php
+declare(strict_types=1);
+
+use Konecnyjakub\Cache\Simple\MemcachedCache;
+
+$cache = new MemcachedCache(defaultTtl: 2);
+$cache->set("one", "abc"); // this item will expire after 2 seconds
+$cache->set("two", "def", 3); // this item will expire after 3 seconds
+```
+
+Be aware that different instances have access to same values.
+
 #### More engines?
 
 There are more ways to cache things, it is possible that more engines will be added in future versions. Likely candidates are Redis and memcached.

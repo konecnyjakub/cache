@@ -15,6 +15,11 @@ jobs:
                 os:
                     - ubuntu-latest
                     - windows-latest
+        services:
+            memcached:
+                image: memcached:1-alpine
+                ports:
+                    - 11211:11211
         steps:
             - uses: actions/checkout@v4
             - uses: shivammathur/setup-php@v2
@@ -22,6 +27,6 @@ jobs:
                   php-version: ${{ matrix.php }}
                   tools: composer, phing
                   coverage: pcov
-                  extensions: apcu
+                  extensions: apcu,memcached
                   ini-values: apc.enable_cli=1
             - run: phing test

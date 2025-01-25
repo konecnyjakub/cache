@@ -12,6 +12,8 @@ stages:
     cache:
         paths:
             - vendor/
+    services:
+        - name: memcached:1-alpine
 
 test:php8.3:
     <<: *test_job

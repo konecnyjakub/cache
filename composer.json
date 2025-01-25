@@ -36,7 +36,8 @@
         "konecnyjakub/mytester": "^7.3"
     },
     "suggest": {
-        "ext-apcu": "To use apcu as a cache engine"
+        "ext-apcu": "To use apcu as a cache engine",
+        "ext-memcached": "To use memcached as a cache engine"
     },
     "provide": {
         "psr/simple-cache-implementation": "1.0 | 2.0 | 3.0"

@@ -1,0 +1,7 @@
+services:
+    memcached:
+        image: memcached:1-alpine
+        restart: unless-stopped
+        container_name: cache_services_memcached
+        ports:
+            -   "11211:11211"
