@@ -3,8 +3,10 @@ declare(strict_types=1);
 
 namespace Konecnyjakub\Cache\Simple;
 
+use MyTester\Attributes\TestSuite;
 use MyTester\TestCase;
 
+#[TestSuite("MemoryCache")]
 final class MemoryCacheTest extends TestCase
 {
     public function testSingleKeyProcess(): void

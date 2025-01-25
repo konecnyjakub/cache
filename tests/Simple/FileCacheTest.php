@@ -3,8 +3,10 @@ declare(strict_types=1);
 
 namespace Konecnyjakub\Cache\Simple;
 
+use MyTester\Attributes\TestSuite;
 use MyTester\TestCase;
 
+#[TestSuite("FileCache")]
 final class FileCacheTest extends TestCase
 {
     public function shutDown(): void
