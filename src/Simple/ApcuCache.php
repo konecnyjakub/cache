@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace Konecnyjakub\Cache\Simple;
 
+use APCUIterator;
 use DateInterval;
 use DateTime;
 
@@ -49,7 +50,15 @@ final class ApcuCache extends BaseCache
 
     public function clear(): bool
     {
-        return apcu_clear_cache();
+        if ($this->namespace === "") {
+            return apcu_clear_cache();
+        }
+        $result = true;
+        /** @var array{key: string, value: mixed} $counter */
+        foreach (new APCUIterator("/^test:(.+)/") as $counter) {
+            $result = $result && $this->doDelete(str_replace($this->namespace . ":", "", $counter["key"]));
+        }
+        return $result;
     }
 
     /**
