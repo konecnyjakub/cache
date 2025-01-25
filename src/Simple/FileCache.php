@@ -85,9 +85,8 @@ final class FileCache extends BaseCache
         return $result;
     }
 
-    public function has(string $key): bool
+    protected function doHas(string $key): bool
     {
-        $this->validateKey($key);
         if (!file_exists($this->getFilePath($key)) || !file_exists($this->getMetaFilePath($key))) {
             return false;
         }

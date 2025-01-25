@@ -70,11 +70,19 @@ abstract class BaseCache implements CacheInterface
         return true;
     }
 
+    public function has(string $key): bool
+    {
+        $this->validateKey($key);
+        return $this->doHas($key);
+    }
+
     abstract protected function doGet(string $key): mixed;
 
     abstract protected function doSet(string $key, mixed $value, \DateInterval|int|null $ttl = null): bool;
 
     abstract protected function doDelete(string $key): bool;
+
+    abstract protected function doHas(string $key): bool;
 
     protected function validateKey(mixed $key): void
     {

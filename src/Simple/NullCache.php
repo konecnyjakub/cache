@@ -32,9 +32,8 @@ final class NullCache extends BaseCache
         return true;
     }
 
-    public function has(string $key): bool
+    protected function doHas(string $key): bool
     {
-        $this->validateKey($key);
         return false;
     }
 }

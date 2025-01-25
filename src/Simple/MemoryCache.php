@@ -45,9 +45,8 @@ final class MemoryCache extends BaseCache
         return true;
     }
 
-    public function has(string $key): bool
+    protected function doHas(string $key): bool
     {
-        $this->validateKey($key);
         return array_key_exists($key, $this->items) && !$this->items[$key]->isExpired();
     }
 }
