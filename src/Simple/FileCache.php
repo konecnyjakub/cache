@@ -4,6 +4,8 @@ declare(strict_types=1);
 namespace Konecnyjakub\Cache\Simple;
 
 use DirectoryIterator;
+use Konecnyjakub\Cache\Common\IItemValueSerializer;
+use Konecnyjakub\Cache\Common\PhpSerializer;
 use SplFileInfo;
 
 final class FileCache extends BaseCache
@@ -16,8 +18,11 @@ final class FileCache extends BaseCache
 
     private readonly string $directory;
 
-    public function __construct(string $directory, private readonly string $namespace = "")
-    {
+    public function __construct(
+        string $directory,
+        private readonly string $namespace = "",
+        private readonly IItemValueSerializer $serializer = new PhpSerializer()
+    ) {
         if (!is_dir($directory) || !is_writable($directory)) {
             throw new InvalidDirectoryException(sprintf(
                 "Directory %s does not exist or is not writable",
@@ -32,13 +37,17 @@ final class FileCache extends BaseCache
 
     protected function doGet(string $key): mixed
     {
-        return unserialize((string) file_get_contents($this->getFilePath($key)));
+        return $this->serializer->unserialize((string) file_get_contents($this->getFilePath($key)));
     }
 
     protected function doSet(string $key, mixed $value, \DateInterval|int|null $ttl = null): bool
     {
         $item = new CacheItem($value, $ttl);
-        $result = (bool) file_put_contents($this->getFilePath($key), serialize($item->value), LOCK_EX);
+        $result = (bool) file_put_contents(
+            $this->getFilePath($key),
+            $this->serializer->serialize($item->value),
+            LOCK_EX
+        );
         $meta = self::META_EXPIRES_AT_TEXT . $item->expiresAt;
         $result = $result && (bool) file_put_contents($this->getMetaFilePath($key), $meta, LOCK_EX);
         return $result;
