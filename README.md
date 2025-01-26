@@ -155,6 +155,40 @@ $cache->set("two", "def", 3); // this item will expire after 3 seconds
 
 Be aware that different instances have access to same values.
 
+#### Chain
+
+ChainCache allows using multiple engines at the same time. Methods has/get/getMultiple try all engines in the order they were registered until one returns data. Methods set/setMultiple/delete/deleteMultiple/clear are run on all available engines.
+
+```php
+<?php
+declare(strict_types=1);
+
+use Konecnyjakub\Cache\Simple\ApcuCache;
+use Konecnyjakub\Cache\Simple\ChainCache;
+use Konecnyjakub\Cache\Simple\FileCache;
+
+$apcuCache = new ApcuCache();
+$fileCache = new FileCache("/var/cache/myapp");
+$cache = new ChainCache();
+$cache->addEngine($fileCache);
+$cache->addEngine($apcuCache);
+
+$apcuCache->set("one", "abc");
+$cache->has("one"); // true
+$apcuCache->has("one"); // true
+$fileCache->has("one"); // false
+
+$cache->set("two", "def");
+$cache->has("two"); // true
+$apcuCache->has("two"); // true
+$fileCache->has("two"); // true
+
+$cache->delete("two");
+$cache->has("two"); // false
+$apcuCache->has("two"); // false
+$fileCache->has("two"); // false
+```
+
 #### More engines?
 
 There are more ways to cache things, it is possible that more engines will be added in future versions. One likely candidates is Redis.
