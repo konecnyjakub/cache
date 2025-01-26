@@ -57,7 +57,7 @@ final class FileCache extends BaseCache
 
     protected function doSet(string $key, mixed $value, \DateInterval|int|null $ttl = null): bool
     {
-        $item = new CacheItem($value, $ttl ?? $this->defaultTtl);
+        $item = new CacheItem($value, $ttl ?? $this->defaultTtl ?? 1000000000);
         $result = (bool) file_put_contents(
             $this->getFilePath($key),
             $this->serializer->serialize($item->value),
