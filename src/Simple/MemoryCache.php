@@ -39,7 +39,7 @@ final class MemoryCache extends BaseCache
         return true;
     }
 
-    public function clear(): bool
+    protected function doClear(): bool
     {
         $this->items = [];
         return true;

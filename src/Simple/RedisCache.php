@@ -62,7 +62,7 @@ final class RedisCache extends BaseCache
         return (bool) $this->client->exists($key);
     }
 
-    public function clear(): bool
+    protected function doClear(): bool
     {
         $this->connect();
         return $this->client->flushDB();

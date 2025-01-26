@@ -32,6 +32,11 @@ abstract class BaseCache implements CacheInterface
         return $this->doDelete($key);
     }
 
+    public function clear(): bool
+    {
+        return $this->doClear();
+    }
+
     public function getMultiple(iterable $keys, mixed $default = null): iterable
     {
         $this->validateKeys($keys);
@@ -81,6 +86,8 @@ abstract class BaseCache implements CacheInterface
     abstract protected function doSet(string $key, mixed $value, \DateInterval|int|null $ttl = null): bool;
 
     abstract protected function doDelete(string $key): bool;
+
+    abstract protected function doClear(): bool;
 
     abstract protected function doHas(string $key): bool;
 

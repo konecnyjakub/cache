@@ -59,7 +59,7 @@ final class ChainCache extends BaseCache
         return false;
     }
 
-    public function clear(): bool
+    protected function doClear(): bool
     {
         $result = true;
         foreach ($this->engines as $engine) {

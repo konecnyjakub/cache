@@ -48,7 +48,7 @@ final class ApcuCache extends BaseCache
         return apcu_exists($this->getKey($key));
     }
 
-    public function clear(): bool
+    protected function doClear(): bool
     {
         if ($this->namespace === "") {
             return apcu_clear_cache();

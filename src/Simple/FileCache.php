@@ -72,7 +72,7 @@ final class FileCache extends BaseCache
         return $result;
     }
 
-    public function clear(): bool
+    protected function doClear(): bool
     {
         $result = true;
         /** @var SplFileInfo $fileInfo */ // @phpstan-ignore varTag.nativeType

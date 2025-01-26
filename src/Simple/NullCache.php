@@ -27,7 +27,7 @@ final class NullCache extends BaseCache
         return true;
     }
 
-    public function clear(): bool
+    protected function doClear(): bool
     {
         return true;
     }

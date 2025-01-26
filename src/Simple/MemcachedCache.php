@@ -50,7 +50,7 @@ final class MemcachedCache extends BaseCache
         return $this->client->getResultCode() === Memcached::RES_SUCCESS;
     }
 
-    public function clear(): bool
+    protected function doClear(): bool
     {
         return $this->client->flush();
     }
