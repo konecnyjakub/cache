@@ -208,7 +208,7 @@ $fileCache->has("two"); // false
 
 #### More engines?
 
-There are more ways to cache things, it is possible that more engines will be added in future versions. One likely candidates is Redis.
+While all planned engines are present, there are more ways to cache things so is possible that more engines will be added in future versions. If there is one you would like to see, open a feature request and it will be considered.
 
 ### PSRs
 
