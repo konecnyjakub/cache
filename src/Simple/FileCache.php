@@ -6,6 +6,7 @@ namespace Konecnyjakub\Cache\Simple;
 use DirectoryIterator;
 use Konecnyjakub\Cache\Common\IItemValueSerializer;
 use Konecnyjakub\Cache\Common\PhpSerializer;
+use Psr\EventDispatcher\EventDispatcherInterface;
 use SplFileInfo;
 
 /**
@@ -33,7 +34,8 @@ final class FileCache extends BaseCache
         string $directory,
         private readonly string $namespace = "",
         private readonly ?int $defaultTtl = null,
-        private readonly IItemValueSerializer $serializer = new PhpSerializer()
+        private readonly IItemValueSerializer $serializer = new PhpSerializer(),
+        ?EventDispatcherInterface $eventDispatcher = null
     ) {
         if (!is_dir($directory) || !is_writable($directory)) {
             throw new InvalidDirectoryException(sprintf(
@@ -45,6 +47,7 @@ final class FileCache extends BaseCache
         if ($this->namespace !== "" && !is_dir($this->getFullPath())) {
             mkdir($this->getFullPath(), 0755);
         }
+        $this->eventDispatcher = $eventDispatcher;
     }
 
     protected function doGet(string $key): mixed

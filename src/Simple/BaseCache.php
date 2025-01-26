@@ -3,6 +3,8 @@ declare(strict_types=1);
 
 namespace Konecnyjakub\Cache\Simple;
 
+use Konecnyjakub\Cache\Events;
+use Psr\EventDispatcher\EventDispatcherInterface;
 use Psr\SimpleCache\CacheInterface;
 use Traversable;
 
@@ -11,29 +13,37 @@ use Traversable;
  */
 abstract class BaseCache implements CacheInterface
 {
+    protected ?EventDispatcherInterface $eventDispatcher = null;
+
     public function get(string $key, mixed $default = null): mixed
     {
         if (!$this->has($key)) {
+            $this->eventDispatcher?->dispatch(new Events\CacheMiss($key));
             return $default;
         }
 
-        return $this->doGet($key);
+        $value = $this->doGet($key);
+        $this->eventDispatcher?->dispatch(new Events\CacheHit($key, $value));
+        return $value;
     }
 
     public function set(string $key, mixed $value, \DateInterval|int|null $ttl = null): bool
     {
         $this->validateKey($key);
+        $this->eventDispatcher?->dispatch(new Events\CacheSave($key, $value));
         return $this->doSet($key, $value, $ttl);
     }
 
     public function delete(string $key): bool
     {
         $this->validateKey($key);
+        $this->eventDispatcher?->dispatch(new Events\CacheDelete($key));
         return $this->doDelete($key);
     }
 
     public function clear(): bool
     {
+        $this->eventDispatcher?->dispatch(new Events\CacheClear());
         return $this->doClear();
     }
 

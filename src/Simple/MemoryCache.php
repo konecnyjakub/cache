@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace Konecnyjakub\Cache\Simple;
 
 use DateInterval;
+use Psr\EventDispatcher\EventDispatcherInterface;
 
 /**
  * Simple in memory cache
@@ -18,8 +19,11 @@ final class MemoryCache extends BaseCache
     /**
      * @param int|null $defaultTtl Default life time in seconds for items if not provided for a specific item
      */
-    public function __construct(private readonly ?int $defaultTtl = null)
-    {
+    public function __construct(
+        private readonly ?int $defaultTtl = null,
+        ?EventDispatcherInterface $eventDispatcher = null
+    ) {
+        $this->eventDispatcher = $eventDispatcher;
     }
 
     protected function doGet(string $key): mixed

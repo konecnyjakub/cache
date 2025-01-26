@@ -5,6 +5,7 @@ namespace Konecnyjakub\Cache\Simple;
 
 use DateInterval;
 use DateTime;
+use Psr\EventDispatcher\EventDispatcherInterface;
 use Redis;
 
 final class RedisCache extends BaseCache
@@ -21,8 +22,10 @@ final class RedisCache extends BaseCache
         private readonly Redis $client,
         private readonly string $host,
         private readonly int $namespace = 0,
-        private readonly ?int $defaultTtl = null
+        private readonly ?int $defaultTtl = null,
+        ?EventDispatcherInterface $eventDispatcher = null
     ) {
+        $this->eventDispatcher = $eventDispatcher;
     }
 
     protected function doGet(string $key): mixed

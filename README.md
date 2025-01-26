@@ -210,6 +210,10 @@ $fileCache->has("two"); // false
 
 While all planned engines are present, there are more ways to cache things so is possible that more engines will be added in future versions. If there is one you would like to see, open a feature request and it will be considered.
 
+#### Events
+
+Our engines (except ChainCache) can call your code when an event occurs - an item is successfully read from cache (cache hit), an item could not be read from cache or was expired (cache miss), an item was saved into cache, an item was deleted from cache and all items were deleted from cache. Just pass a [PSR-14 ](https://www.php-fig.org/psr/psr-14/) event dispatcher as parameter eventDispatcher into the engine's constructor. Classes for all possible events are in namespace Konecnyjakub\Cache\Events.
+
 ### PSRs
 
 At the moment, this package only implements PSR-16 (Simple cache). Support for PSR-6 is planned but there is no eta.

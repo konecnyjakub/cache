@@ -6,6 +6,7 @@ namespace Konecnyjakub\Cache\Simple;
 use APCUIterator;
 use DateInterval;
 use DateTime;
+use Psr\EventDispatcher\EventDispatcherInterface;
 
 /**
  * Simple apcu cache
@@ -18,8 +19,12 @@ final class ApcuCache extends BaseCache
      * @param string $namespace Optional namespace for this instance. Is added as prefix to keys
      * @param int|null $defaultTtl Default life time in seconds for items if not provided for a specific item
      */
-    public function __construct(private readonly string $namespace = "", private readonly ?int $defaultTtl = null)
-    {
+    public function __construct(
+        private readonly string $namespace = "",
+        private readonly ?int $defaultTtl = null,
+        ?EventDispatcherInterface $eventDispatcher = null
+    ) {
+        $this->eventDispatcher = $eventDispatcher;
     }
 
     protected function doGet(string $key): mixed

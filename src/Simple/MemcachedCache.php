@@ -6,6 +6,7 @@ namespace Konecnyjakub\Cache\Simple;
 use DateInterval;
 use DateTime;
 use Memcached;
+use Psr\EventDispatcher\EventDispatcherInterface;
 
 /**
  * Simple memcached cache
@@ -19,8 +20,10 @@ final class MemcachedCache extends BaseCache
      */
     public function __construct(
         private readonly Memcached $client,
-        private readonly ?int $defaultTtl = null
+        private readonly ?int $defaultTtl = null,
+        ?EventDispatcherInterface $eventDispatcher = null
     ) {
+        $this->eventDispatcher = $eventDispatcher;
     }
 
     protected function doGet(string $key): mixed
