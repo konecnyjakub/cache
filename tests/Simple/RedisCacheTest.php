@@ -4,6 +4,9 @@ declare(strict_types=1);
 namespace Konecnyjakub\Cache\Simple;
 
 use DateInterval;
+use Konecnyjakub\Cache\Events;
+use Konecnyjakub\EventDispatcher\AutoListenerProvider;
+use Konecnyjakub\EventDispatcher\EventDispatcher;
 use MyTester\Attributes\RequiresPhpExtension;
 use MyTester\Attributes\TestSuite;
 use MyTester\TestCase;
@@ -117,6 +120,45 @@ final class RedisCacheTest extends TestCase
 
         $cache->set($key, $value, 30);
         $this->assertTrue($cache->has($key));
+    }
+
+    #[RequiresPhpExtension("redis")]
+    public function testEvents(): void
+    {
+        $eventsLogger = new TestEventsLogger();
+        $listenerProvider = new AutoListenerProvider();
+        $listenerProvider->addSubscriber($eventsLogger);
+        $eventDispatcher = new EventDispatcher($listenerProvider);
+        $cache = new RedisCache($this->client, $this->host, eventDispatcher: $eventDispatcher);
+        $key = "one";
+        $value = "abc";
+        $cache->get($key);
+        $cache->set($key, $value);
+        $cache->get($key);
+        $cache->delete($key);
+        $cache->clear();
+        $this->assertCount(5, $eventsLogger->events);
+        /** @var Events\CacheMiss $event */
+        $event = $eventsLogger->events[0];
+        $this->assertType(Events\CacheMiss::class, $event);
+        $this->assertSame($key, $event->key);
+        /** @var Events\CacheSave $event */
+        $event = $eventsLogger->events[1];
+        $this->assertType(Events\CacheSave::class, $event);
+        $this->assertSame($key, $event->key);
+        $this->assertSame($value, $event->value);
+        /** @var Events\CacheHit $event */
+        $event = $eventsLogger->events[2];
+        $this->assertType(Events\CacheHit::class, $event);
+        $this->assertSame($key, $event->key);
+        $this->assertSame($value, $event->value);
+        /** @var Events\CacheDelete $event */
+        $event = $eventsLogger->events[3];
+        $this->assertType(Events\CacheDelete::class, $event);
+        $this->assertSame($key, $event->key);
+        /** @var Events\CacheClear $event */
+        $event = $eventsLogger->events[4];
+        $this->assertType(Events\CacheClear::class, $event);
     }
 
     #[RequiresPhpExtension("redis")]
