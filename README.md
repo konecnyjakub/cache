@@ -157,7 +157,7 @@ Be aware that different instances have access to same values.
 
 #### More engines?
 
-There are more ways to cache things, it is possible that more engines will be added in future versions. Likely candidates are Redis and memcached.
+There are more ways to cache things, it is possible that more engines will be added in future versions. One likely candidates is Redis.
 
 ### PSRs
 
