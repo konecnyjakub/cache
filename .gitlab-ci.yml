@@ -15,8 +15,11 @@ stages:
     services:
         - name: memcached:1-alpine
           alias: memcached
+        - name: redis:7-alpine
+          alias: redis
     variables:
         MEMCACHED_HOST: memcached
+        REDIS_HOST: redis
 
 test:php8.3:
     <<: *test_job

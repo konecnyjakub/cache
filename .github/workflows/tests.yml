@@ -19,6 +19,10 @@ jobs:
                 image: memcached:1-alpine
                 ports:
                     - 11211:11211
+            redis:
+                image: redis:7-alpine
+                ports:
+                    - 6379:6379
         steps:
             - uses: actions/checkout@v4
             - uses: shivammathur/setup-php@v2
@@ -26,6 +30,6 @@ jobs:
                   php-version: ${{ matrix.php }}
                   tools: composer, phing
                   coverage: pcov
-                  extensions: apcu,memcached
+                  extensions: apcu,memcached,redis
                   ini-values: apc.enable_cli=1
             - run: phing test

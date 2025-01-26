@@ -155,6 +155,23 @@ $cache->set("two", "def", 3); // this item will expire after 3 seconds
 
 Be aware that different instances have access to same values.
 
+#### Redis
+
+RedisCache is an advanced cache engine, it uses a redis server to store values. It requires PHP extension redis an a redis server. You should use it if possible. It supports setting default lifetime for items. When creating an instance of RedisCache, you have to pass the name of your server and optionally you can set database that you want to use (by default, 0 is used).
+
+```php
+<?php
+declare(strict_types=1);
+
+use Konecnyjakub\Cache\Simple\RedisCache;
+use Redis;
+
+$client = new Redis();
+$cache = new RedisCache($client, "localhost", namespace: 1, defaultTtl: 2);
+$cache->set("one", "abc"); // this item will expire after 2 seconds
+$cache->set("two", "def", 3); // this item will expire after 3 seconds
+```
+
 #### Chain
 
 ChainCache allows using multiple engines at the same time. Methods has/get/getMultiple try all engines in the order they were registered until one returns data. Methods set/setMultiple/delete/deleteMultiple/clear are run on all available engines.
