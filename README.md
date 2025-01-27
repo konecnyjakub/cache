@@ -166,11 +166,12 @@ declare(strict_types=1);
 use Konecnyjakub\Cache\Simple\RedisCache;
 use Redis;
 
-$client = new Redis();
-$cache = new RedisCache($client, "localhost", namespace: 1, defaultTtl: 2);
+$cache = new RedisCache("localhost", namespace: 1, defaultTtl: 2);
 $cache->set("one", "abc"); // this item will expire after 2 seconds
 $cache->set("two", "def", 3); // this item will expire after 3 seconds
 ```
+
+Optionally you can pass Redis instance to RedisCache's constructor, this is useful if you want to use custom settings. Otherwise it will be created with default settings for you.
 
 #### Chain
 

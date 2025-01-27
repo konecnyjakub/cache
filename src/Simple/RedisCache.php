@@ -10,21 +10,22 @@ use Redis;
 
 final class RedisCache extends BaseCache
 {
+    private readonly Redis $client;
+
     private bool $connected = false;
 
     /**
-     * @param Redis $client
-     * @param string $host
      * @param int $namespace Database to use
      * @param int|null $defaultTtl Default life time in seconds for items if not provided for a specific item
      */
     public function __construct(
-        private readonly Redis $client,
         private readonly string $host,
+        ?Redis $client = null,
         private readonly int $namespace = 0,
         private readonly ?int $defaultTtl = null,
         ?EventDispatcherInterface $eventDispatcher = null
     ) {
+        $this->client = $client ?? new Redis();
         $this->eventDispatcher = $eventDispatcher;
     }
 

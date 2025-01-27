@@ -40,7 +40,7 @@ final class RedisCacheTest extends TestCase
         $key = "abc";
         $value = "def";
         $default = "default";
-        $cache = new RedisCache($this->client, $this->host);
+        $cache = new RedisCache($this->host, $this->client);
 
         $this->assertFalse($cache->has($key));
         $this->assertSame($default, $cache->get($key, $default));
@@ -66,7 +66,7 @@ final class RedisCacheTest extends TestCase
         $default = "default";
         $key2 = "two";
         $value2 = "def";
-        $cache = new RedisCache($this->client, $this->host);
+        $cache = new RedisCache($this->host, $this->client);
 
         $this->assertFalse($cache->has($key1));
         $this->assertFalse($cache->has($key2));
@@ -113,7 +113,7 @@ final class RedisCacheTest extends TestCase
     {
         $key = "ttl";
         $value = "abc";
-        $cache = new RedisCache($this->client, $this->host, defaultTtl: -1);
+        $cache = new RedisCache($this->host, $this->client, defaultTtl: -1);
 
         @$cache->set($key, $value); // phpcs:ignore Generic.PHP.NoSilencedErrors
         $this->assertFalse($cache->has($key));
@@ -129,7 +129,7 @@ final class RedisCacheTest extends TestCase
         $listenerProvider = new AutoListenerProvider();
         $listenerProvider->addSubscriber($eventsLogger);
         $eventDispatcher = new EventDispatcher($listenerProvider);
-        $cache = new RedisCache($this->client, $this->host, eventDispatcher: $eventDispatcher);
+        $cache = new RedisCache($this->host, $this->client, eventDispatcher: $eventDispatcher);
         $key = "one";
         $value = "abc";
         $cache->get($key);
@@ -164,7 +164,7 @@ final class RedisCacheTest extends TestCase
     #[RequiresPhpExtension("redis")]
     public function testExceptions(): void
     {
-        $cache = new RedisCache($this->client, $this->host);
+        $cache = new RedisCache($this->host, $this->client);
         $this->assertThrowsException(function () use ($cache) {
             $cache->get("{");
         }, InvalidKeyException::class);
