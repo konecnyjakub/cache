@@ -5,7 +5,4 @@ namespace Konecnyjakub\Cache\Events;
 
 final readonly class CacheClear
 {
-    public function __construct()
-    {
-    }
 }
