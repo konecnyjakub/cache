@@ -15,13 +15,15 @@ final class RedisCache extends BaseCache
     private bool $connected = false;
 
     /**
-     * @param int $namespace Database to use
+     * @param int $database Database to use, usually 0 - 15
+     * @param string $namespace Optional namespace for this instance. Is added as prefix to keys
      * @param int|null $defaultTtl Default life time in seconds for items if not provided for a specific item
      */
     public function __construct(
         private readonly string $host,
         ?Redis $client = null,
-        private readonly int $namespace = 0,
+        private readonly int $database = 0,
+        private readonly string $namespace = "",
         private readonly ?int $defaultTtl = null,
         ?EventDispatcherInterface $eventDispatcher = null
     ) {
@@ -32,7 +34,7 @@ final class RedisCache extends BaseCache
     protected function doGet(string $key): mixed
     {
         $this->connect();
-        return $this->client->get($key);
+        return $this->client->get($this->getKey($key));
     }
 
     protected function doSet(string $key, mixed $value, \DateInterval|int|null $ttl = null): bool
@@ -50,26 +52,37 @@ final class RedisCache extends BaseCache
         if (is_int($ttl)) {
             $options['EX'] = $ttl;
         }
-        return $this->client->set($key, $value, $options);
+        return $this->client->set($this->getKey($key), $value, $options);
     }
 
     protected function doDelete(string $key): bool
     {
         $this->connect();
-        $this->client->del($key);
+        $this->client->del($this->getKey($key));
         return true;
     }
 
     protected function doHas(string $key): bool
     {
         $this->connect();
-        return (bool) $this->client->exists($key);
+        return (bool) $this->client->exists($this->getKey($key));
     }
 
     protected function doClear(): bool
     {
         $this->connect();
-        return $this->client->flushDB();
+
+        if ($this->namespace === "") {
+            return $this->client->flushDB();
+        }
+
+        $result = true;
+        /** @var string[] $keys */
+        $keys = $this->client->keys($this->getKey("*"));
+        foreach ($keys as $key) {
+            $result = $result && $this->doDelete(str_replace($this->namespace . ":", "", $key));
+        }
+        return $result;
     }
 
     private function connect(): void
@@ -78,7 +91,15 @@ final class RedisCache extends BaseCache
             return;
         }
         $this->client->connect($this->host);
-        $this->client->select($this->namespace);
+        $this->client->select($this->database);
         $this->connected = true;
+    }
+
+    /**
+     * @internal
+     */
+    public function getKey(string $key): string
+    {
+        return ($this->namespace !== "" ? $this->namespace . ":" : "") . $key;
     }
 }

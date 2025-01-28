@@ -123,6 +123,29 @@ final class RedisCacheTest extends TestCase
     }
 
     #[RequiresPhpExtension("redis")]
+    public function testNamespace(): void
+    {
+        $key1 = "one";
+        $cache1 = new RedisCache($this->host, $this->client);
+        $this->assertSame($key1, $cache1->getKey($key1));
+
+        $key2 = "two";
+        $namespace = "test";
+        $cache2 = new RedisCache($this->host, $this->client, namespace: $namespace);
+        $this->assertSame($namespace . ":" . $key2, $cache2->getKey($key2));
+
+        $cache1->set($key1, "abc");
+        $this->assertTrue($cache1->has($key1));
+        $cache2->set($key2, "def");
+        $this->assertTrue($cache2->has($key2));
+        $cache2->clear();
+        $this->assertFalse($cache2->has($key2));
+        $this->assertTrue($cache1->has($key1));
+        $cache1->clear();
+        $this->assertFalse($cache1->has($key1));
+    }
+
+    #[RequiresPhpExtension("redis")]
     public function testEvents(): void
     {
         $eventsLogger = new TestEventsLogger();

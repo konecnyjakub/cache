@@ -166,12 +166,32 @@ declare(strict_types=1);
 use Konecnyjakub\Cache\Simple\RedisCache;
 use Redis;
 
-$cache = new RedisCache("localhost", namespace: 1, defaultTtl: 2);
+$cache = new RedisCache("localhost", database: 1, defaultTtl: 2);
 $cache->set("one", "abc"); // this item will expire after 2 seconds
 $cache->set("two", "def", 3); // this item will expire after 3 seconds
 ```
 
 Optionally you can pass Redis instance to RedisCache's constructor, this is useful if you want to use custom settings. Otherwise it will be created with default settings for you.
+
+By default, different instances have access to same values unless you set a namespace for them.
+
+```php
+<?php
+declare(strict_types=1);
+
+use Konecnyjakub\Cache\Simple\RedisCache;
+
+$cache1 = new RedisCache(namespace: "pool1");
+$cache2 = new RedisCache(namespace: "pool2");
+$cache1->set("one", "abc");
+$cache2->set("two", "def");
+$cache1->has("one"); // true
+$cache2->has("one"); // false
+$cache1->has("two"); // false
+$cache2->has("two"); // true
+```
+
+Warning: if you use both an instance of RedisCache without namespace and an instance with namespace, calling the clear method on instance without namespace clears everything in the apcu cache, even values saved from instances with namespace. For this reason we recommend either using only one instance (without namespace) or multiple instances but with different namespace for each of them.
 
 #### Chain
 
