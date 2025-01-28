@@ -61,7 +61,7 @@ final class ApcuCache extends BaseCache
         $result = true;
         /** @var array{key: string, value: mixed} $counter */
         foreach (new APCUIterator("/^$this->namespace:(.+)/") as $counter) {
-            $result = $result && $this->doDelete(str_replace($this->namespace . ":", "", $counter["key"]));
+            $result = $result && $this->doDelete(str_replace($this->getKey(""), "", $counter["key"]));
         }
         return $result;
     }
