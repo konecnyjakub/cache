@@ -126,6 +126,18 @@ final class ApcuCacheTest extends TestCase
     }
 
     #[RequiresPhpExtension("apcu")]
+    public function testSerializer(): void
+    {
+        $cache = new ApcuCache();
+
+        $key = "number";
+        $value = 123;
+        $cache->set($key, $value);
+        $this->assertSame($value, $cache->get($key));
+        $this->assertType("int", $cache->get($key));
+    }
+
+    #[RequiresPhpExtension("apcu")]
     public function testEvents(): void
     {
         $eventsLogger = new TestEventsLogger();

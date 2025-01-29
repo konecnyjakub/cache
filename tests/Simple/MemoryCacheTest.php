@@ -97,6 +97,17 @@ final class MemoryCacheTest extends TestCase
         $this->assertTrue($cache->has($key));
     }
 
+    public function testSerializer(): void
+    {
+        $cache = new MemoryCache();
+
+        $key = "number";
+        $value = 123;
+        $cache->set($key, $value);
+        $this->assertSame($value, $cache->get($key));
+        $this->assertType("int", $cache->get($key));
+    }
+
     public function testEvents(): void
     {
         $eventsLogger = new TestEventsLogger();
