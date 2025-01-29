@@ -16,6 +16,11 @@ final class ChainCache extends BaseCache
     /** @var CacheInterface[] */
     private array $engines = [];
 
+    public function __construct()
+    {
+        parent::__construct(null);
+    }
+
     public function addEngine(CacheInterface $engine): void
     {
         $this->engines[] = $engine;

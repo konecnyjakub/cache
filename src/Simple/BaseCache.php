@@ -13,7 +13,9 @@ use Traversable;
  */
 abstract class BaseCache implements CacheInterface
 {
-    protected ?EventDispatcherInterface $eventDispatcher = null;
+    public function __construct(protected readonly ?EventDispatcherInterface $eventDispatcher = null)
+    {
+    }
 
     public function get(string $key, mixed $default = null): mixed
     {

@@ -47,7 +47,7 @@ final class FileCache extends BaseCache
         if ($this->namespace !== "" && !is_dir($this->getFullPath())) {
             mkdir($this->getFullPath(), 0755);
         }
-        $this->eventDispatcher = $eventDispatcher;
+        parent::__construct($eventDispatcher);
     }
 
     protected function doGet(string $key): mixed

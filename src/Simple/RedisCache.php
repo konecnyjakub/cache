@@ -32,7 +32,7 @@ final class RedisCache extends BaseCache
         ?EventDispatcherInterface $eventDispatcher = null
     ) {
         $this->client = $client ?? new Redis();
-        $this->eventDispatcher = $eventDispatcher;
+        parent::__construct($eventDispatcher);
     }
 
     protected function doGet(string $key): mixed

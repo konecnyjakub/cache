@@ -24,7 +24,7 @@ final class ApcuCache extends BaseCache
         private readonly ?int $defaultTtl = null,
         ?EventDispatcherInterface $eventDispatcher = null
     ) {
-        $this->eventDispatcher = $eventDispatcher;
+        parent::__construct($eventDispatcher);
     }
 
     protected function doGet(string $key): mixed
