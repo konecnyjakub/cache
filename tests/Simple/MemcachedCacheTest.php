@@ -123,6 +123,18 @@ final class MemcachedCacheTest extends TestCase
     }
 
     #[RequiresPhpExtension("memcached")]
+    public function testSerializer(): void
+    {
+        $cache = new MemcachedCache($this->client);
+
+        $key = "number";
+        $value = 123;
+        $cache->set($key, $value);
+        $this->assertSame($value, $cache->get($key));
+        $this->assertType("int", $cache->get($key));
+    }
+
+    #[RequiresPhpExtension("memcached")]
     public function testEvents(): void
     {
         $eventsLogger = new TestEventsLogger();

@@ -5,6 +5,8 @@ namespace Konecnyjakub\Cache\Simple;
 
 use DateInterval;
 use DateTime;
+use Konecnyjakub\Cache\Common\IItemValueSerializer;
+use Konecnyjakub\Cache\Common\PhpSerializer;
 use Memcached;
 use Psr\EventDispatcher\EventDispatcherInterface;
 
@@ -17,10 +19,12 @@ final class MemcachedCache extends BaseCache
 {
     /**
      * @param int|null $defaultTtl Default life time in seconds for items if not provided for a specific item
+     * @param IItemValueSerializer $serializer Used when saving into/reading from cache files
      */
     public function __construct(
         private readonly Memcached $client,
         private readonly ?int $defaultTtl = null,
+        private readonly IItemValueSerializer $serializer = new PhpSerializer(),
         ?EventDispatcherInterface $eventDispatcher = null
     ) {
         $this->eventDispatcher = $eventDispatcher;
@@ -28,7 +32,7 @@ final class MemcachedCache extends BaseCache
 
     protected function doGet(string $key): mixed
     {
-        return $this->client->get($this->getKey($key));
+        return $this->serializer->unserialize($this->client->get($this->getKey($key))); // @phpstan-ignore argument.type
     }
 
     protected function doSet(string $key, mixed $value, DateInterval|int|null $ttl = null): bool
@@ -38,7 +42,7 @@ final class MemcachedCache extends BaseCache
         } elseif ($ttl === null) {
             $ttl = $this->defaultTtl;
         }
-        return $this->client->set($this->getKey($key), $value, (int) $ttl);
+        return $this->client->set($this->getKey($key), $this->serializer->serialize($value), (int) $ttl);
     }
 
     protected function doDelete(string $key): bool

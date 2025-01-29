@@ -5,6 +5,8 @@ namespace Konecnyjakub\Cache\Simple;
 
 use DateInterval;
 use DateTime;
+use Konecnyjakub\Cache\Common\IItemValueSerializer;
+use Konecnyjakub\Cache\Common\PhpSerializer;
 use Psr\EventDispatcher\EventDispatcherInterface;
 use Redis;
 
@@ -18,6 +20,7 @@ final class RedisCache extends BaseCache
      * @param int $database Database to use, usually 0 - 15
      * @param string $namespace Optional namespace for this instance. Is added as prefix to keys
      * @param int|null $defaultTtl Default life time in seconds for items if not provided for a specific item
+     * @param IItemValueSerializer $serializer Used when saving into/reading from cache files
      */
     public function __construct(
         private readonly string $host,
@@ -25,6 +28,7 @@ final class RedisCache extends BaseCache
         private readonly int $database = 0,
         private readonly string $namespace = "",
         private readonly ?int $defaultTtl = null,
+        private readonly IItemValueSerializer $serializer = new PhpSerializer(),
         ?EventDispatcherInterface $eventDispatcher = null
     ) {
         $this->client = $client ?? new Redis();
@@ -34,7 +38,7 @@ final class RedisCache extends BaseCache
     protected function doGet(string $key): mixed
     {
         $this->connect();
-        return $this->client->get($this->getKey($key));
+        return $this->serializer->unserialize($this->client->get($this->getKey($key))); // @phpstan-ignore argument.type
     }
 
     protected function doSet(string $key, mixed $value, \DateInterval|int|null $ttl = null): bool
@@ -52,7 +56,7 @@ final class RedisCache extends BaseCache
         if (is_int($ttl)) {
             $options['EX'] = $ttl;
         }
-        return $this->client->set($this->getKey($key), $value, $options);
+        return $this->client->set($this->getKey($key), $this->serializer->serialize($value), $options);
     }
 
     protected function doDelete(string $key): bool
