@@ -125,13 +125,24 @@ final class FileCacheTest extends TestCase
     {
         $key = "ttl";
         $value = "abc";
-        $cache = new MemoryCache(defaultTtl: -1);
+        $cache = new FileCache(__DIR__, "fileCache", defaultTtl: -1);
 
         $cache->set($key, $value);
         $this->assertFalse($cache->has($key));
 
         $cache->set($key, $value, 30);
         $this->assertTrue($cache->has($key));
+    }
+
+    public function testSerializer(): void
+    {
+        $cache = new FileCache(__DIR__, "fileCache");
+
+        $key = "number";
+        $value = 123;
+        $cache->set($key, $value);
+        $this->assertSame($value, $cache->get($key));
+        $this->assertType("int", $cache->get($key));
     }
 
     public function testEvents(): void
