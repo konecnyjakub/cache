@@ -21,10 +21,10 @@ final class ApcuCache extends BaseCache
      */
     public function __construct(
         private readonly string $namespace = "",
-        private readonly ?int $defaultTtl = null,
+        ?int $defaultTtl = null,
         ?EventDispatcherInterface $eventDispatcher = null
     ) {
-        parent::__construct($eventDispatcher);
+        parent::__construct($defaultTtl, $eventDispatcher);
     }
 
     protected function doGet(string $key): mixed
@@ -33,12 +33,10 @@ final class ApcuCache extends BaseCache
         return $success ? $value : null;
     }
 
-    protected function doSet(string $key, mixed $value, DateInterval|int|null $ttl = null): bool
+    protected function doSet(string $key, mixed $value, DateInterval|int|null $ttl): bool
     {
         if ($ttl instanceof DateInterval) {
             $ttl = (new DateTime())->add($ttl)->getTimestamp() - time();
-        } elseif ($ttl === null) {
-            $ttl = $this->defaultTtl;
         }
         return apcu_store($this->getKey($key), $value, (int) $ttl);
     }

@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace Konecnyjakub\Cache\Simple;
 
 use DateInterval;
+use Psr\EventDispatcher\EventDispatcherInterface;
 
 /**
  * Simple null cache
@@ -12,12 +13,17 @@ use DateInterval;
  */
 final class NullCache extends BaseCache
 {
+    public function __construct(?EventDispatcherInterface $eventDispatcher = null)
+    {
+        parent::__construct(null, $eventDispatcher);
+    }
+
     protected function doGet(string $key): mixed
     {
         return null;
     }
 
-    protected function doSet(string $key, mixed $value, DateInterval|int|null $ttl = null): bool
+    protected function doSet(string $key, mixed $value, DateInterval|int|null $ttl): bool
     {
         return true;
     }

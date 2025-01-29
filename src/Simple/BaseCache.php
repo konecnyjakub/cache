@@ -13,8 +13,13 @@ use Traversable;
  */
 abstract class BaseCache implements CacheInterface
 {
-    public function __construct(protected readonly ?EventDispatcherInterface $eventDispatcher = null)
-    {
+    /**
+     * @param int|null $defaultTtl Default life time in seconds for items if not provided for a specific item
+     */
+    public function __construct(
+        protected readonly ?int $defaultTtl = null,
+        protected readonly ?EventDispatcherInterface $eventDispatcher = null
+    ) {
     }
 
     public function get(string $key, mixed $default = null): mixed
@@ -33,7 +38,7 @@ abstract class BaseCache implements CacheInterface
     {
         $this->validateKey($key);
         $this->eventDispatcher?->dispatch(new Events\CacheSave($key, $value));
-        return $this->doSet($key, $value, $ttl);
+        return $this->doSet($key, $value, $ttl ?? $this->defaultTtl);
     }
 
     public function delete(string $key): bool
@@ -95,7 +100,7 @@ abstract class BaseCache implements CacheInterface
 
     abstract protected function doGet(string $key): mixed;
 
-    abstract protected function doSet(string $key, mixed $value, \DateInterval|int|null $ttl = null): bool;
+    abstract protected function doSet(string $key, mixed $value, \DateInterval|int|null $ttl): bool;
 
     abstract protected function doDelete(string $key): bool;
 

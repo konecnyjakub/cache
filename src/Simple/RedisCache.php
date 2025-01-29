@@ -27,12 +27,12 @@ final class RedisCache extends BaseCache
         ?Redis $client = null,
         private readonly int $database = 0,
         private readonly string $namespace = "",
-        private readonly ?int $defaultTtl = null,
+        ?int $defaultTtl = null,
         private readonly IItemValueSerializer $serializer = new PhpSerializer(),
         ?EventDispatcherInterface $eventDispatcher = null
     ) {
         $this->client = $client ?? new Redis();
-        parent::__construct($eventDispatcher);
+        parent::__construct($defaultTtl, $eventDispatcher);
     }
 
     protected function doGet(string $key): mixed
@@ -41,7 +41,7 @@ final class RedisCache extends BaseCache
         return $this->serializer->unserialize($this->client->get($this->getKey($key))); // @phpstan-ignore argument.type
     }
 
-    protected function doSet(string $key, mixed $value, \DateInterval|int|null $ttl = null): bool
+    protected function doSet(string $key, mixed $value, DateInterval|int|null $ttl): bool
     {
         if ((is_int($ttl) && $ttl < 0)) {
             return true;
@@ -50,8 +50,6 @@ final class RedisCache extends BaseCache
         $options = [];
         if ($ttl instanceof DateInterval) {
             $ttl = (new DateTime())->add($ttl)->getTimestamp() - time();
-        } elseif ($ttl === null) {
-            $ttl = $this->defaultTtl;
         }
         if (is_int($ttl)) {
             $options['EX'] = $ttl;

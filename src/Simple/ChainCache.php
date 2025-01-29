@@ -18,7 +18,7 @@ final class ChainCache extends BaseCache
 
     public function __construct()
     {
-        parent::__construct(null);
+        parent::__construct(null, null);
     }
 
     public function addEngine(CacheInterface $engine): void
@@ -36,7 +36,7 @@ final class ChainCache extends BaseCache
         return null;
     }
 
-    protected function doSet(string $key, mixed $value, \DateInterval|int|null $ttl = null): bool
+    protected function doSet(string $key, mixed $value, \DateInterval|int|null $ttl): bool
     {
         $result = true;
         foreach ($this->engines as $engine) {

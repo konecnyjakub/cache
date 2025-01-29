@@ -23,11 +23,11 @@ final class MemcachedCache extends BaseCache
      */
     public function __construct(
         private readonly Memcached $client,
-        private readonly ?int $defaultTtl = null,
+        ?int $defaultTtl = null,
         private readonly IItemValueSerializer $serializer = new PhpSerializer(),
         ?EventDispatcherInterface $eventDispatcher = null
     ) {
-        parent::__construct($eventDispatcher);
+        parent::__construct($defaultTtl, $eventDispatcher);
     }
 
     protected function doGet(string $key): mixed
@@ -35,12 +35,10 @@ final class MemcachedCache extends BaseCache
         return $this->serializer->unserialize($this->client->get($this->getKey($key))); // @phpstan-ignore argument.type
     }
 
-    protected function doSet(string $key, mixed $value, DateInterval|int|null $ttl = null): bool
+    protected function doSet(string $key, mixed $value, DateInterval|int|null $ttl): bool
     {
         if ($ttl instanceof DateInterval) {
             $ttl = (new DateTime())->add($ttl)->getTimestamp() - time();
-        } elseif ($ttl === null) {
-            $ttl = $this->defaultTtl;
         }
         return $this->client->set($this->getKey($key), $this->serializer->serialize($value), (int) $ttl);
     }

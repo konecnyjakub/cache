@@ -33,7 +33,7 @@ final class FileCache extends BaseCache
     public function __construct(
         string $directory,
         private readonly string $namespace = "",
-        private readonly ?int $defaultTtl = null,
+        ?int $defaultTtl = null,
         private readonly IItemValueSerializer $serializer = new PhpSerializer(),
         ?EventDispatcherInterface $eventDispatcher = null
     ) {
@@ -47,7 +47,7 @@ final class FileCache extends BaseCache
         if ($this->namespace !== "" && !is_dir($this->getFullPath())) {
             mkdir($this->getFullPath(), 0755);
         }
-        parent::__construct($eventDispatcher);
+        parent::__construct($defaultTtl, $eventDispatcher);
     }
 
     protected function doGet(string $key): mixed
@@ -55,9 +55,9 @@ final class FileCache extends BaseCache
         return $this->serializer->unserialize((string) file_get_contents($this->getFilePath($key)));
     }
 
-    protected function doSet(string $key, mixed $value, \DateInterval|int|null $ttl = null): bool
+    protected function doSet(string $key, mixed $value, \DateInterval|int|null $ttl): bool
     {
-        $item = new CacheItem($value, $ttl ?? $this->defaultTtl ?? 1000000000);
+        $item = new CacheItem($value, $ttl ?? 1000000000);
         $result = (bool) file_put_contents(
             $this->getFilePath($key),
             $this->serializer->serialize($item->value),
