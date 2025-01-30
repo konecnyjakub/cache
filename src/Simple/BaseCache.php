@@ -84,12 +84,13 @@ abstract class BaseCache implements CacheInterface
     public function deleteMultiple(iterable $keys): bool
     {
         $this->validateKeys($keys);
+        $result = true;
         /** @var string[] $keys */
         $keys = $this->iterableToArray($keys);
         foreach ($keys as $key) {
-            $this->delete($key);
+            $result = $result && $this->delete($key);
         }
-        return true;
+        return $result;
     }
 
     public function has(string $key): bool
