@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace Konecnyjakub\Cache\Simple;
 
+use DateInterval;
 use Psr\SimpleCache\CacheInterface;
 
 /**
@@ -11,32 +12,27 @@ use Psr\SimpleCache\CacheInterface;
  * Tries all reading operations on all available engines until one returns data
  * Performs all writing operations on all available engines
  */
-final class ChainCache extends BaseCache
+final class ChainCache implements CacheInterface
 {
     /** @var CacheInterface[] */
     private array $engines = [];
-
-    public function __construct()
-    {
-        parent::__construct(null, null);
-    }
 
     public function addEngine(CacheInterface $engine): void
     {
         $this->engines[] = $engine;
     }
 
-    protected function doGet(string $key): mixed
+    public function get(string $key, mixed $default = null): mixed
     {
         foreach ($this->engines as $engine) {
             if ($engine->has($key)) {
                 return $engine->get($key);
             }
         }
-        return null;
+        return $default;
     }
 
-    protected function doSet(string $key, mixed $value, \DateInterval|int|null $ttl): bool
+    public function set(string $key, mixed $value, DateInterval|int|null $ttl = null): bool
     {
         $result = true;
         foreach ($this->engines as $engine) {
@@ -45,7 +41,7 @@ final class ChainCache extends BaseCache
         return $result;
     }
 
-    protected function doDelete(string $key): bool
+    public function delete(string $key): bool
     {
         $result = true;
         foreach ($this->engines as $engine) {
@@ -54,7 +50,7 @@ final class ChainCache extends BaseCache
         return $result;
     }
 
-    protected function doHas(string $key): bool
+    public function has(string $key): bool
     {
         foreach ($this->engines as $engine) {
             if ($engine->has($key)) {
@@ -64,11 +60,45 @@ final class ChainCache extends BaseCache
         return false;
     }
 
-    protected function doClear(): bool
+    public function clear(): bool
     {
         $result = true;
         foreach ($this->engines as $engine) {
             $result = $result && $engine->clear();
+        }
+        return $result;
+    }
+
+    public function getMultiple(iterable $keys, mixed $default = null): iterable
+    {
+        $values = [];
+
+        foreach ($keys as $key) {
+            $values[$key] = $this->get($key, $default);
+        }
+
+        return $values;
+    }
+
+    /**
+     * @param mixed[] $values
+     */
+    public function setMultiple(iterable $values, DateInterval|int|null $ttl = null): bool
+    {
+        /**
+         * @var string $key
+         */
+        foreach ($values as $key => $value) {
+            $this->set($key, $value, $ttl);
+        }
+        return true;
+    }
+
+    public function deleteMultiple(iterable $keys): bool
+    {
+        $result = true;
+        foreach ($keys as $key) {
+            $result = $result && $this->delete($key);
         }
         return $result;
     }
