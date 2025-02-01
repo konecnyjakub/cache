@@ -14,8 +14,6 @@ final class RedisCache extends BaseCache
 {
     private readonly Redis $client;
 
-    private bool $connected = false;
-
     /**
      * @param int $database Database to use, usually 0 - 15
      * @param string $namespace Optional namespace for this instance. Is added as prefix to keys
@@ -89,12 +87,13 @@ final class RedisCache extends BaseCache
 
     private function connect(): void
     {
-        if ($this->connected) {
+        /** @var int|false $currentDb */
+        $currentDb = $this->client->getDBNum(); // @phpstan-ignore varTag.nativeType
+        if ($currentDb !== false) {
             return;
         }
         $this->client->connect($this->host);
         $this->client->select($this->database);
-        $this->connected = true;
     }
 
     /**
