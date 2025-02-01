@@ -103,4 +103,11 @@ final class RedisCache extends BaseCache
     {
         return ($this->namespace !== "" ? $this->namespace . ":" : "") . $key;
     }
+
+    public function __destruct()
+    {
+        if ($this->client->isConnected()) {
+            $this->client->close();
+        }
+    }
 }
