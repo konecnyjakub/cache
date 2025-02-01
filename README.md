@@ -147,8 +147,11 @@ MemcachedCache is an advanced cache engine, it stores values on a memcached serv
 declare(strict_types=1);
 
 use Konecnyjakub\Cache\Simple\MemcachedCache;
+use Memcached;
 
-$cache = new MemcachedCache(defaultTtl: 2);
+$client = new Memcached();
+$client->addServer("localhost", 11211);
+$cache = new MemcachedCache($client, defaultTtl: 2);
 $cache->set("one", "abc"); // this item will expire after 2 seconds
 $cache->set("two", "def", 3); // this item will expire after 3 seconds
 ```
