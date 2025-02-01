@@ -160,7 +160,7 @@ Be aware that different instances have access to same values.
 
 #### Redis
 
-RedisCache is an advanced cache engine, it uses a redis server to store values. It requires PHP extension redis an a redis server. You should use it if possible. It supports setting default lifetime for items. When creating an instance of RedisCache, you have to pass the name of your server and optionally you can set database that you want to use (by default, 0 is used).
+RedisCache is an advanced cache engine, it uses a redis server to store values. It requires PHP extension redis an a redis server. You should use it if possible. It supports setting default lifetime for items.
 
 ```php
 <?php
@@ -169,23 +169,27 @@ declare(strict_types=1);
 use Konecnyjakub\Cache\Simple\RedisCache;
 use Redis;
 
-$cache = new RedisCache("localhost", database: 1, defaultTtl: 2);
+$client = new Redis();
+$client->connect("localhost");
+$client->select(0); // optional, if you want to use a different database than the default one (0)
+$cache = new RedisCache($client, defaultTtl: 2);
 $cache->set("one", "abc"); // this item will expire after 2 seconds
 $cache->set("two", "def", 3); // this item will expire after 3 seconds
 ```
 
-Optionally you can pass Redis instance to RedisCache's constructor, this is useful if you want to use custom settings. Otherwise it will be created with default settings for you.
-
-By default, different instances have access to same values unless you set a namespace for them.
+By default, different instances have access to same values unless you set a namespace for them (or they use a different database).
 
 ```php
 <?php
 declare(strict_types=1);
 
 use Konecnyjakub\Cache\Simple\RedisCache;
+use Redis;
 
-$cache1 = new RedisCache(namespace: "pool1");
-$cache2 = new RedisCache(namespace: "pool2");
+$client = new Redis();
+$client->connect("localhost");
+$cache1 = new RedisCache($client, namespace: "pool1");
+$cache2 = new RedisCache($client, namespace: "pool2");
 $cache1->set("one", "abc");
 $cache2->set("two", "def");
 $cache1->has("one"); // true

@@ -16,7 +16,6 @@ use Redis;
 final class RedisCacheTest extends TestCase
 {
     private Redis $client;
-    private string $host;
 
     public function startUp(): void
     {
@@ -24,8 +23,9 @@ final class RedisCacheTest extends TestCase
         if (!extension_loaded("redis")) {
             return;
         }
+        $host = is_string(getenv("REDIS_HOST")) ? getenv("REDIS_HOST") : "localhost";
         $this->client = new Redis();
-        $this->host = is_string(getenv("REDIS_HOST")) ? getenv("REDIS_HOST") : "localhost";
+        $this->client->connect($host);
     }
 
     public function tearDown(): void
@@ -40,7 +40,7 @@ final class RedisCacheTest extends TestCase
         $key = "abc";
         $value = "def";
         $default = "default";
-        $cache = new RedisCache($this->host, $this->client);
+        $cache = new RedisCache($this->client);
 
         $this->assertFalse($cache->has($key));
         $this->assertSame($default, $cache->get($key, $default));
@@ -66,7 +66,7 @@ final class RedisCacheTest extends TestCase
         $default = "default";
         $key2 = "two";
         $value2 = "def";
-        $cache = new RedisCache($this->host, $this->client);
+        $cache = new RedisCache($this->client);
 
         $this->assertFalse($cache->has($key1));
         $this->assertFalse($cache->has($key2));
@@ -113,7 +113,7 @@ final class RedisCacheTest extends TestCase
     {
         $key = "ttl";
         $value = "abc";
-        $cache = new RedisCache($this->host, $this->client, defaultTtl: -1);
+        $cache = new RedisCache($this->client, defaultTtl: -1);
 
         @$cache->set($key, $value); // phpcs:ignore Generic.PHP.NoSilencedErrors
         $this->assertFalse($cache->has($key));
@@ -126,12 +126,12 @@ final class RedisCacheTest extends TestCase
     public function testNamespace(): void
     {
         $key1 = "one";
-        $cache1 = new RedisCache($this->host, $this->client);
+        $cache1 = new RedisCache($this->client);
         $this->assertSame($key1, $cache1->getKey($key1));
 
         $key2 = "two";
         $namespace = "test";
-        $cache2 = new RedisCache($this->host, $this->client, namespace: $namespace);
+        $cache2 = new RedisCache($this->client, namespace: $namespace);
         $this->assertSame($namespace . ":" . $key2, $cache2->getKey($key2));
 
         $cache1->set($key1, "abc");
@@ -148,7 +148,7 @@ final class RedisCacheTest extends TestCase
     #[RequiresPhpExtension("redis")]
     public function testSerializer(): void
     {
-        $cache = new RedisCache($this->host, $this->client);
+        $cache = new RedisCache($this->client);
 
         $key = "number";
         $value = 123;
@@ -164,7 +164,7 @@ final class RedisCacheTest extends TestCase
         $listenerProvider = new AutoListenerProvider();
         $listenerProvider->addSubscriber($eventsLogger);
         $eventDispatcher = new EventDispatcher($listenerProvider);
-        $cache = new RedisCache($this->host, $this->client, eventDispatcher: $eventDispatcher);
+        $cache = new RedisCache($this->client, eventDispatcher: $eventDispatcher);
         $key = "one";
         $value = "abc";
         $cache->get($key);
@@ -199,7 +199,7 @@ final class RedisCacheTest extends TestCase
     #[RequiresPhpExtension("redis")]
     public function testExceptions(): void
     {
-        $cache = new RedisCache($this->host, $this->client);
+        $cache = new RedisCache($this->client);
         $this->assertThrowsException(function () use ($cache) {
             $cache->get("{");
         }, InvalidKeyException::class);
