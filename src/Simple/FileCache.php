@@ -32,11 +32,12 @@ final class FileCache extends BaseCache
      */
     public function __construct(
         string $directory,
-        private readonly string $namespace = "",
+        string $namespace = "",
         ?int $defaultTtl = null,
         private readonly IItemValueSerializer $serializer = new PhpSerializer(),
         ?EventDispatcherInterface $eventDispatcher = null
     ) {
+        parent::__construct($namespace, $defaultTtl, $eventDispatcher);
         if (!is_dir($directory) || !is_writable($directory)) {
             throw new InvalidDirectoryException(sprintf(
                 "Directory %s does not exist or is not writable",
@@ -47,7 +48,6 @@ final class FileCache extends BaseCache
         if ($this->namespace !== "" && !is_dir($this->getFullPath())) {
             mkdir($this->getFullPath(), 0755);
         }
-        parent::__construct($defaultTtl, $eventDispatcher);
     }
 
     protected function doGet(string $key): mixed
@@ -106,10 +106,17 @@ final class FileCache extends BaseCache
         return $expiresAt > time();
     }
 
+    /**
+     * @internal
+     */
+    public function getKey(string $key): string
+    {
+        return ($this->namespace !== "" ? $this->namespace . DIRECTORY_SEPARATOR : "") . $key;
+    }
+
     private function getFullPath(): string
     {
-        return $this->directory . DIRECTORY_SEPARATOR .
-            ($this->namespace !== "" ? $this->namespace . DIRECTORY_SEPARATOR : "");
+        return $this->directory . DIRECTORY_SEPARATOR . $this->getKey("");
     }
 
     /**

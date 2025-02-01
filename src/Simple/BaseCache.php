@@ -14,9 +14,11 @@ use Traversable;
 abstract class BaseCache implements CacheInterface
 {
     /**
+     * @param string $namespace Optional namespace for one instance
      * @param int|null $defaultTtl Default life time in seconds for items if not provided for a specific item
      */
     public function __construct(
+        protected readonly string $namespace = "",
         protected readonly ?int $defaultTtl = null,
         protected readonly ?EventDispatcherInterface $eventDispatcher = null
     ) {
@@ -97,6 +99,14 @@ abstract class BaseCache implements CacheInterface
     {
         $this->validateKey($key);
         return $this->doHas($key);
+    }
+
+    /**
+     * @internal
+     */
+    public function getKey(string $key): string
+    {
+        return ($this->namespace !== "" ? $this->namespace . ":" : "") . $key;
     }
 
     abstract protected function doGet(string $key): mixed;

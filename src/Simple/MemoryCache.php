@@ -16,6 +16,16 @@ final class MemoryCache extends BaseCache
     /** @var array<string, CacheItem> */
     private array $items = [];
 
+    /**
+     * @param int|null $defaultTtl Default life time in seconds for items if not provided for a specific item
+     */
+    public function __construct(
+        ?int $defaultTtl = null,
+        ?EventDispatcherInterface $eventDispatcher = null
+    ) {
+        parent::__construct("", $defaultTtl, $eventDispatcher);
+    }
+
     protected function doGet(string $key): mixed
     {
         return $this->items[$key]->value;

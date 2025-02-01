@@ -24,13 +24,13 @@ final class RedisCache extends BaseCache
         private readonly string $host,
         ?Redis $client = null,
         private readonly int $database = 0,
-        private readonly string $namespace = "",
+        string $namespace = "",
         ?int $defaultTtl = null,
         private readonly IItemValueSerializer $serializer = new PhpSerializer(),
         ?EventDispatcherInterface $eventDispatcher = null
     ) {
         $this->client = $client ?? new Redis();
-        parent::__construct($defaultTtl, $eventDispatcher);
+        parent::__construct($namespace, $defaultTtl, $eventDispatcher);
     }
 
     protected function doGet(string $key): mixed
@@ -94,14 +94,6 @@ final class RedisCache extends BaseCache
         }
         $this->client->connect($this->host);
         $this->client->select($this->database);
-    }
-
-    /**
-     * @internal
-     */
-    public function getKey(string $key): string
-    {
-        return ($this->namespace !== "" ? $this->namespace . ":" : "") . $key;
     }
 
     public function __destruct()

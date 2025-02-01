@@ -15,7 +15,7 @@ final class NullCache extends BaseCache
 {
     public function __construct(?EventDispatcherInterface $eventDispatcher = null)
     {
-        parent::__construct(null, $eventDispatcher);
+        parent::__construct("", null, $eventDispatcher);
     }
 
     protected function doGet(string $key): mixed

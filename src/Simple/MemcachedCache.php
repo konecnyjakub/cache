@@ -27,7 +27,7 @@ final class MemcachedCache extends BaseCache
         private readonly IItemValueSerializer $serializer = new PhpSerializer(),
         ?EventDispatcherInterface $eventDispatcher = null
     ) {
-        parent::__construct($defaultTtl, $eventDispatcher);
+        parent::__construct("", $defaultTtl, $eventDispatcher);
     }
 
     protected function doGet(string $key): mixed

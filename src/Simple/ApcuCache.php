@@ -20,11 +20,11 @@ final class ApcuCache extends BaseCache
      * @param int|null $defaultTtl Default life time in seconds for items if not provided for a specific item
      */
     public function __construct(
-        private readonly string $namespace = "",
+        string $namespace = "",
         ?int $defaultTtl = null,
         ?EventDispatcherInterface $eventDispatcher = null
     ) {
-        parent::__construct($defaultTtl, $eventDispatcher);
+        parent::__construct($namespace, $defaultTtl, $eventDispatcher);
     }
 
     protected function doGet(string $key): mixed
@@ -62,13 +62,5 @@ final class ApcuCache extends BaseCache
             $result = $result && $this->doDelete(str_replace($this->getKey(""), "", $counter["key"]));
         }
         return $result;
-    }
-
-    /**
-     * @internal
-     */
-    public function getKey(string $key): string
-    {
-        return ($this->namespace !== "" ? $this->namespace . ":" : "") . $key;
     }
 }
