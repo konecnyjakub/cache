@@ -59,12 +59,4 @@ final class MemcachedCache extends BaseCache
     {
         return $this->client->flush();
     }
-
-    /**
-     * @internal
-     */
-    public function getKey(string $key): string
-    {
-        return $key;
-    }
 }
