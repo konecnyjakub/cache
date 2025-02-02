@@ -91,8 +91,6 @@ abstract class BaseCache implements CacheInterface
     {
         $this->validateKeys($keys);
         $result = true;
-        /** @var string[] $keys */
-        $keys = $this->iterableToArray($keys);
         foreach ($keys as $key) {
             $result = $result && $this->delete($key);
         }
