@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace Konecnyjakub\Cache\Simple;
 
+use Konecnyjakub\Cache\Common\ItemKeyValidator;
 use Konecnyjakub\Cache\Events;
 use Psr\EventDispatcher\EventDispatcherInterface;
 use Psr\SimpleCache\CacheInterface;
@@ -13,6 +14,8 @@ use Traversable;
  */
 abstract class BaseCache implements CacheInterface
 {
+    protected readonly ItemKeyValidator $itemKeyValidator;
+
     /**
      * @param string $namespace Optional namespace for one instance
      * @param int|null $defaultTtl Default life time in seconds for items if not provided for a specific item
@@ -22,6 +25,7 @@ abstract class BaseCache implements CacheInterface
         protected readonly ?int $defaultTtl = null,
         protected readonly ?EventDispatcherInterface $eventDispatcher = null
     ) {
+        $this->itemKeyValidator = new ItemKeyValidator();
     }
 
     public function get(string $key, mixed $default = null): mixed
@@ -121,7 +125,7 @@ abstract class BaseCache implements CacheInterface
 
     protected function validateKey(mixed $key): void
     {
-        if (!is_string($key) || $key === '' || strlen($key) > 64 || strpbrk($key, "{}()/\@:") !== false) {
+        if (!$this->itemKeyValidator->isKeyValid($key)) {
             throw new InvalidKeyException();
         }
     }
@@ -131,9 +135,8 @@ abstract class BaseCache implements CacheInterface
      */
     protected function validateKeys(iterable $keys): void
     {
-        $keys = $this->iterableToArray($keys);
-        foreach ($keys as $key) {
-            $this->validateKey($key);
+        if (!$this->itemKeyValidator->isKeysValid($keys)) {
+            throw new InvalidKeyException();
         }
     }
 
