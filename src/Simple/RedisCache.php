@@ -10,6 +10,11 @@ use Konecnyjakub\Cache\Common\PhpSerializer;
 use Psr\EventDispatcher\EventDispatcherInterface;
 use Redis;
 
+/**
+ * Simple redis cache
+ *
+ * Stores values on a redis server
+ */
 final class RedisCache extends BaseCache
 {
     /**
