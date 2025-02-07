@@ -94,6 +94,9 @@ final class ChainCacheTest extends TestCase
         );
 
         $cache->setMultiple([$key1 => $value1, $key2 => $value2, ], -1);
+        $this->assertFalse($cache->has($key1));
+        $this->assertFalse($cache1->has($key1));
+        $this->assertFalse($cache2->has($key1));
         $this->assertFalse($cache->has($key2));
         $this->assertFalse($cache1->has($key2));
         $this->assertFalse($cache2->has($key2));

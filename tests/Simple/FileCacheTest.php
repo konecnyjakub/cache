@@ -69,6 +69,7 @@ final class FileCacheTest extends TestCase
         $this->assertFalse(file_exists($cache->getMetaFilePath($key2)));
 
         $cache->setMultiple([$key1 => $value1, $key2 => $value2, ], -1);
+        $this->assertFalse($cache->has($key1));
         $this->assertFalse($cache->has($key2));
         $this->assertSame(
             [$key1 => $default, $key2 => $default, ],

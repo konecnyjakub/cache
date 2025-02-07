@@ -52,6 +52,7 @@ final class NullCacheTest extends TestCase
         );
 
         $cache->setMultiple([$key1 => $value1, $key2 => $value2, ], -1);
+        $this->assertFalse($cache->has($key1));
         $this->assertFalse($cache->has($key2));
         $this->assertSame(
             [$key1 => $default, $key2 => $default, ],

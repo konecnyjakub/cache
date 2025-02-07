@@ -56,6 +56,7 @@ final class ApcuCacheTest extends TestCase
         );
 
         $cache->setMultiple([$key1 => $value1, $key2 => $value2, ], -1);
+        $this->assertFalse($cache->has($key1));
         $this->assertFalse($cache->has($key2));
         $this->assertSame(
             [$key1 => $default, $key2 => $default, ],
@@ -116,7 +117,9 @@ final class ApcuCacheTest extends TestCase
 
         $cache1->set($key1, "abc");
         $this->assertTrue($cache1->has($key1));
+        $this->assertFalse($cache2->has($key1));
         $cache2->set($key2, "def");
+        $this->assertFalse($cache1->has($key2));
         $this->assertTrue($cache2->has($key2));
         $cache2->clear();
         $this->assertFalse($cache2->has($key2));
