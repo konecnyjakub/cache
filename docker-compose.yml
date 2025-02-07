@@ -1,13 +1,13 @@
 services:
     memcached:
         image: memcached:1-alpine
-        restart: unless-stopped
+        restart: on-failure
         container_name: cache_services_memcached
         ports:
             -   "11211:11211"
     redis:
         image: redis:7-alpine
-        restart: unless-stopped
+        restart: on-failure
         container_name: cache_services_redis
         ports:
             -   "6379:6379"
