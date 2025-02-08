@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace Konecnyjakub\Cache\Simple;
 
 use Konecnyjakub\Cache\Events;
+use Konecnyjakub\Cache\TestEventsLogger;
 use Konecnyjakub\EventDispatcher\AutoListenerProvider;
 use Konecnyjakub\EventDispatcher\EventDispatcher;
 use MyTester\Attributes\TestSuite;

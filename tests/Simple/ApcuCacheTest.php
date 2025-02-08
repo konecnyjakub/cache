@@ -5,6 +5,7 @@ namespace Konecnyjakub\Cache\Simple;
 
 use DateInterval;
 use Konecnyjakub\Cache\Events;
+use Konecnyjakub\Cache\TestEventsLogger;
 use Konecnyjakub\EventDispatcher\AutoListenerProvider;
 use Konecnyjakub\EventDispatcher\EventDispatcher;
 use MyTester\Attributes\RequiresPhpExtension;

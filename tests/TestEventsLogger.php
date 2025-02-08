@@ -1,9 +1,8 @@
 <?php
 declare(strict_types=1);
 
-namespace Konecnyjakub\Cache\Simple;
+namespace Konecnyjakub\Cache;
 
-use Konecnyjakub\Cache\Events;
 use Konecnyjakub\EventDispatcher\IEventSubscriber;
 
 final class TestEventsLogger implements IEventSubscriber
