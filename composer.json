@@ -6,7 +6,9 @@
         "cache",
         "caching",
         "simple cache",
+        "cache pool",
         "psr-16",
+        "psr-6",
         "file",
         "filesystem",
         "memory",
@@ -25,7 +27,8 @@
     },
     "require": {
         "php": ">=8.3.0",
-        "psr/simple-cache": "^2.0 || ^3.0"
+        "psr/simple-cache": "^2.0 || ^3.0",
+        "psr/cache": "^2.0 || ^3.0"
     },
     "require-dev": {
         "php-parallel-lint/php-parallel-lint": "^1.4",
@@ -42,7 +45,8 @@
         "psr/event-dispatcher": "To use events in cache engines"
     },
     "provide": {
-        "psr/simple-cache-implementation": "1.0 | 2.0 | 3.0"
+        "psr/simple-cache-implementation": "1.0 | 2.0 | 3.0",
+        "psr/cache-implementation": "1.0 | 2.0 | 3.0"
     },
     "autoload": {
         "psr-4": {

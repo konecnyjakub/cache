@@ -3,7 +3,7 @@ Cache
 
 [![Total Downloads](https://poser.pugx.org/konecnyjakub/cache/downloads)](https://packagist.org/packages/konecnyjakub/cache) [![Latest Stable Version](https://poser.pugx.org/konecnyjakub/cache/v/stable)](https://gitlab.com/konecnyjakub/cache/-/releases) [![build status](https://gitlab.com/konecnyjakub/cache/badges/master/pipeline.svg?ignore_skipped=true)](https://gitlab.com/konecnyjakub/cache/-/commits/master) [![coverage report](https://gitlab.com/konecnyjakub/cache/badges/master/coverage.svg)](https://gitlab.com/konecnyjakub/cache/-/commits/master) [![License](https://poser.pugx.org/konecnyjakub/cache/license)](https://gitlab.com/konecnyjakub/cache/-/blob/master/LICENSE.md)
 
-This is a simple [PSR-16](https://www.php-fig.org/psr/psr-16/) caching library.
+This is a simple [PSR-6](https://www.php-fig.org/psr/psr-6/) and [PSR-16](https://www.php-fig.org/psr/psr-16/) caching library.
 
 Installation
 ------------
@@ -32,6 +32,10 @@ MemoryCache is a very simple cache that simply stores values in memory during cu
 
 Advanced usage
 --------------
+
+### PSRs
+
+This package implements both PSR-6 and PSR-16. Usage with PSR-16 is described below, all engines and their features have a PSR-6 counterpart in namespace Konecnyjakub\Cache\Pools.
 
 ### Available engines
 
@@ -244,4 +248,4 @@ Our engines (except ChainCache) can call your code when an event occurs - an ite
 
 ### PSRs
 
-At the moment, this package only implements PSR-16 (Simple cache). Support for PSR-6 is planned but there is no eta.
+This package implements both PSR-16 and PSR-6.
