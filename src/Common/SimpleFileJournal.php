@@ -11,6 +11,7 @@ final readonly class SimpleFileJournal implements IJournal
     private const string FILE_EXTENSION = ".meta";
 
     private const string EXPIRES_AT_TEXT = "expiresAt=";
+    private const string TAGS_TEST = "tags=";
 
     public function __construct(private string $directory)
     {
@@ -23,22 +24,29 @@ final readonly class SimpleFileJournal implements IJournal
         }
 
         /** @var list<string> $lines */
-        $lines = file($this->getFilename($key));
+        $lines = file($this->getFilename($key), FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
         $expiresAt = null;
+        $tags = [];
         foreach ($lines as $line) {
             if (str_starts_with($line, self::EXPIRES_AT_TEXT)) {
                 $expiresAt = (int) str_replace(self::EXPIRES_AT_TEXT, "", $line);
             }
+            if (str_starts_with($line, self::TAGS_TEST)) {
+                $tags = explode(",", str_replace(self::TAGS_TEST, "", $line));
+            }
         }
 
-        return new CacheItemMetadata($expiresAt);
+        return new CacheItemMetadata($expiresAt, $tags);
     }
 
     public function set(string $key, CacheItemMetadata $metadata): bool
     {
         $content = "";
         if ($metadata->expiresAt !== null) {
-            $content = self::EXPIRES_AT_TEXT . $metadata->expiresAt;
+            $content .= self::EXPIRES_AT_TEXT . $metadata->expiresAt . "\n";
+        }
+        if (count($metadata->tags) > 0) {
+            $content .= self::TAGS_TEST . join(",", $metadata->tags) . "\n";
         }
         return $content === "" ?
             $this->clear($key) : (bool) file_put_contents($this->getFilename($key), $content, LOCK_EX);
@@ -63,6 +71,26 @@ final readonly class SimpleFileJournal implements IJournal
             }
         }
         return $result;
+    }
+
+    public function getKeysByTags(array $tags): array
+    {
+        $keys = [];
+
+        /** @var SplFileInfo $fileInfo */ // @phpstan-ignore varTag.nativeType
+        foreach (new DirectoryIterator($this->directory) as $fileInfo) {
+            if (
+                str_ends_with($fileInfo->getFilename(), self::FILE_EXTENSION)
+            ) {
+                $key = $fileInfo->getBasename(self::FILE_EXTENSION);
+                $metadata = $this->get($key);
+                if (count(array_intersect($tags, $metadata->tags)) > 0) {
+                    $keys[] = $key;
+                }
+            }
+        }
+
+        return $keys;
     }
 
     /**

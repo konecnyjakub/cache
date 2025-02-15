@@ -24,4 +24,12 @@ interface IJournal
      * @param string|null $key Name of cache item/null for all cache items
      */
     public function clear(?string $key = null): bool;
+
+    /**
+     * Get list of keys that has at least one of the listed tags
+     *
+     * @param string[] $tags
+     * @return string[]
+     */
+    public function getKeysByTags(array $tags): array;
 }

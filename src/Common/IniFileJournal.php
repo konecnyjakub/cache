@@ -11,28 +11,26 @@ final readonly class IniFileJournal implements IJournal
 
     public function get(string $key): CacheItemMetadata
     {
-        $ini = file_exists($this->getFilename()) ?
-            parse_ini_file($this->getFilename(), true, INI_SCANNER_TYPED) : false;
-        if ($ini === false || !array_key_exists($key, $ini)) {
+        $ini = $this->getParsedIni();
+        if (!array_key_exists($key, $ini)) {
             return new CacheItemMetadata();
         }
 
         /** @var array<string, array<string, mixed>> $ini */
         $expiresAt = $ini[$key]["expiresAt"];
-        return new CacheItemMetadata(is_int($expiresAt) ? $expiresAt : null);
+        /** @var string[] $tags */
+        $tags = $ini[$key]["tags"] ?? [];
+        return new CacheItemMetadata(is_int($expiresAt) ? $expiresAt : null, $tags);
     }
 
     public function set(string $key, CacheItemMetadata $metadata): bool
     {
-        $contents = file_exists($this->getFilename()) ?
-            parse_ini_file($this->getFilename(), true, INI_SCANNER_TYPED) : false;
-        if ($contents === false) {
-            $contents = [];
-        }
+        $contents = $this->getParsedIni();
 
         /** @var array<string, array<string, mixed>> $contents */
         $contents[$key] = [
             "expiresAt" => $metadata->expiresAt,
+            "tags" => $metadata->tags,
         ];
 
         $iniString = "";
@@ -57,12 +55,40 @@ final readonly class IniFileJournal implements IJournal
         return $this->set($key, new CacheItemMetadata());
     }
 
+    public function getKeysByTags(array $tags): array
+    {
+        $keys = [];
+        $ini = $this->getParsedIni();
+
+        foreach ($ini as $key => $values) {
+            /** @var string[] $keyTags */
+            $keyTags = $values[self::KEY_TAGS] ?? [];
+            if (count(array_intersect($tags, $keyTags)) > 0) {
+                $keys[] = $key;
+            }
+        }
+
+        return $keys;
+    }
+
     /**
      * @internal
      */
     public function getFilename(): string
     {
         return $this->directory . DIRECTORY_SEPARATOR . "journal.ini";
+    }
+
+    /**
+     * @return array<string, array<string, mixed>>
+     */
+    private function getParsedIni(): array
+    {
+        if (!file_exists($this->getFilename())) {
+            return [];
+        }
+
+        return parse_ini_file($this->getFilename(), true, INI_SCANNER_TYPED); // @phpstan-ignore return.type
     }
 
     /**
@@ -74,6 +100,13 @@ final readonly class IniFileJournal implements IJournal
 
         if (isset($metadata["expiresAt"]) && is_int($metadata["expiresAt"])) {
             $content .= "expiresAt = {$metadata["expiresAt"]}\n";
+        }
+        if (isset($metadata["tags"]) && is_array($metadata["tags"])) {
+            foreach ($metadata["tags"] as $tag) {
+                if (is_string($tag)) {
+                    $content .= "tags[] = $tag\n";
+                }
+            }
         }
 
         if ($content !== "") {
