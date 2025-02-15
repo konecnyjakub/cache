@@ -10,8 +10,8 @@ final readonly class SimpleFileJournal implements IJournal
 {
     private const string FILE_EXTENSION = ".meta";
 
-    private const string EXPIRES_AT_TEXT = "expiresAt=";
-    private const string TAGS_TEST = "tags=";
+    private const string TEXT_EXPIRES_AT = "expiresAt=";
+    private const string TEXT_TAGS = "tags=";
 
     public function __construct(private string $directory)
     {
@@ -28,11 +28,11 @@ final readonly class SimpleFileJournal implements IJournal
         $expiresAt = null;
         $tags = [];
         foreach ($lines as $line) {
-            if (str_starts_with($line, self::EXPIRES_AT_TEXT)) {
-                $expiresAt = (int) str_replace(self::EXPIRES_AT_TEXT, "", $line);
+            if (str_starts_with($line, self::TEXT_EXPIRES_AT)) {
+                $expiresAt = (int) str_replace(self::TEXT_EXPIRES_AT, "", $line);
             }
-            if (str_starts_with($line, self::TAGS_TEST)) {
-                $tags = explode(",", str_replace(self::TAGS_TEST, "", $line));
+            if (str_starts_with($line, self::TEXT_TAGS)) {
+                $tags = explode(",", str_replace(self::TEXT_TAGS, "", $line));
             }
         }
 
@@ -43,10 +43,10 @@ final readonly class SimpleFileJournal implements IJournal
     {
         $content = "";
         if ($metadata->expiresAt !== null) {
-            $content .= self::EXPIRES_AT_TEXT . $metadata->expiresAt . "\n";
+            $content .= self::TEXT_EXPIRES_AT . $metadata->expiresAt . "\n";
         }
         if (count($metadata->tags) > 0) {
-            $content .= self::TAGS_TEST . join(",", $metadata->tags) . "\n";
+            $content .= self::TEXT_TAGS . join(",", $metadata->tags) . "\n";
         }
         return $content === "" ?
             $this->clear($key) : (bool) file_put_contents($this->getFilename($key), $content, LOCK_EX);
