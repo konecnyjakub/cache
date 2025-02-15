@@ -5,6 +5,9 @@ namespace Konecnyjakub\Cache\Common;
 
 final readonly class IniFileJournal implements IJournal
 {
+    private const string KEY_EXPIRES_AT = "expiresAt";
+    private const string KEY_TAGS = "tags";
+
     public function __construct(private string $directory)
     {
     }
@@ -17,9 +20,9 @@ final readonly class IniFileJournal implements IJournal
         }
 
         /** @var array<string, array<string, mixed>> $ini */
-        $expiresAt = $ini[$key]["expiresAt"];
+        $expiresAt = $ini[$key][self::KEY_EXPIRES_AT];
         /** @var string[] $tags */
-        $tags = $ini[$key]["tags"] ?? [];
+        $tags = $ini[$key][self::KEY_TAGS] ?? [];
         return new CacheItemMetadata(is_int($expiresAt) ? $expiresAt : null, $tags);
     }
 
@@ -29,8 +32,8 @@ final readonly class IniFileJournal implements IJournal
 
         /** @var array<string, array<string, mixed>> $contents */
         $contents[$key] = [
-            "expiresAt" => $metadata->expiresAt,
-            "tags" => $metadata->tags,
+            self::KEY_EXPIRES_AT => $metadata->expiresAt,
+            self::KEY_TAGS => $metadata->tags,
         ];
 
         $iniString = "";
@@ -98,13 +101,13 @@ final readonly class IniFileJournal implements IJournal
     {
         $content = "";
 
-        if (isset($metadata["expiresAt"]) && is_int($metadata["expiresAt"])) {
-            $content .= "expiresAt = {$metadata["expiresAt"]}\n";
+        if (isset($metadata[self::KEY_EXPIRES_AT]) && is_int($metadata[self::KEY_EXPIRES_AT])) {
+            $content .= self::KEY_EXPIRES_AT . " = {$metadata["expiresAt"]}\n";
         }
-        if (isset($metadata["tags"]) && is_array($metadata["tags"])) {
-            foreach ($metadata["tags"] as $tag) {
+        if (isset($metadata[self::KEY_TAGS]) && is_array($metadata[self::KEY_TAGS])) {
+            foreach ($metadata[self::KEY_TAGS] as $tag) {
                 if (is_string($tag)) {
-                    $content .= "tags[] = $tag\n";
+                    $content .= self::KEY_TAGS . "[] = $tag\n";
                 }
             }
         }
