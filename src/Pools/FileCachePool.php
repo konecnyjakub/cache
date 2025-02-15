@@ -7,8 +7,8 @@ use DirectoryIterator;
 use Konecnyjakub\Cache\Common\CacheItemMetadata;
 use Konecnyjakub\Cache\Common\IItemValueSerializer;
 use Konecnyjakub\Cache\Common\IJournal;
+use Konecnyjakub\Cache\Common\IniFileJournal;
 use Konecnyjakub\Cache\Common\PhpSerializer;
-use Konecnyjakub\Cache\Common\SimpleFileJournal;
 use Psr\EventDispatcher\EventDispatcherInterface;
 use SplFileInfo;
 
@@ -50,7 +50,7 @@ final class FileCachePool extends BaseCachePool
         if ($this->namespace !== "" && !is_dir($this->getFullPath())) {
             mkdir($this->getFullPath(), 0755);
         }
-        $this->journal = $journal ?? new SimpleFileJournal($this->getFullPath());
+        $this->journal = $journal ?? new IniFileJournal($this->getFullPath());
     }
 
     protected function doGet(string $key): CacheItem
