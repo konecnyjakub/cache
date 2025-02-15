@@ -7,8 +7,9 @@ final readonly class CacheItemMetadata
 {
     /**
      * @internal
+     * @param string[] $tags
      */
-    public function __construct(public ?int $expiresAt = null)
+    public function __construct(public ?int $expiresAt = null, public array $tags = [])
     {
     }
 }

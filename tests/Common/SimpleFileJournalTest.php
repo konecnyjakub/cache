@@ -33,16 +33,15 @@ final class SimpleFileJournalTest extends TestCase
         $metadata = $journal->get($key2);
         $this->assertSame(null, $metadata->expiresAt);
 
-        $journal->set($key1, new CacheItemMetadata());
-        $this->assertTrue(file_exists($journal->getFilename($key1)));
-        $this->assertSame("", file_get_contents($journal->getFilename($key1)));
+        $this->assertTrue($journal->set($key1, new CacheItemMetadata()));
+        $this->assertFalse(file_exists($journal->getFilename($key1)));
         $metadata = $journal->get($key1);
         $this->assertSame(null, $metadata->expiresAt);
         $this->assertFalse(file_exists($journal->getFilename($key2)));
         $metadata = $journal->get($key2);
         $this->assertSame(null, $metadata->expiresAt);
 
-        $journal->set($key1, new CacheItemMetadata(30));
+        $this->assertTrue($journal->set($key1, new CacheItemMetadata(30)));
         $this->assertTrue(file_exists($journal->getFilename($key1)));
         $this->assertSame("expiresAt=30", file_get_contents($journal->getFilename($key1)));
         $metadata = $journal->get($key1);
@@ -51,7 +50,7 @@ final class SimpleFileJournalTest extends TestCase
         $metadata = $journal->get($key2);
         $this->assertSame(null, $metadata->expiresAt);
 
-        $journal->clear($key1);
+        $this->assertTrue($journal->clear($key1));
         $this->assertFalse(file_exists($journal->getFilename($key1)));
         $metadata = $journal->get($key1);
         $this->assertSame(null, $metadata->expiresAt);
@@ -59,8 +58,8 @@ final class SimpleFileJournalTest extends TestCase
         $metadata = $journal->get($key2);
         $this->assertSame(null, $metadata->expiresAt);
 
-        $journal->set($key1, new CacheItemMetadata(40));
-        $journal->set($key2, new CacheItemMetadata(50));
+        $this->assertTrue($journal->set($key1, new CacheItemMetadata(40)));
+        $this->assertTrue($journal->set($key2, new CacheItemMetadata(50)));
         $this->assertTrue(file_exists($journal->getFilename($key1)));
         $this->assertSame("expiresAt=40", file_get_contents($journal->getFilename($key1)));
         $metadata = $journal->get($key1);
@@ -70,7 +69,7 @@ final class SimpleFileJournalTest extends TestCase
         $metadata = $journal->get($key2);
         $this->assertSame(50, $metadata->expiresAt);
 
-        $journal->clear();
+        $this->assertTrue($journal->clear());
         $this->assertFalse(file_exists($journal->getFilename($key1)));
         $metadata = $journal->get($key1);
         $this->assertSame(null, $metadata->expiresAt);

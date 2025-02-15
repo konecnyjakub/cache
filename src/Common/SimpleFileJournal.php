@@ -40,12 +40,16 @@ final readonly class SimpleFileJournal implements IJournal
         if ($metadata->expiresAt !== null) {
             $content = self::EXPIRES_AT_TEXT . $metadata->expiresAt;
         }
-        return (bool) file_put_contents($this->getFilename($key), $content, LOCK_EX);
+        return $content === "" ?
+            $this->clear($key) : (bool) file_put_contents($this->getFilename($key), $content, LOCK_EX);
     }
 
     public function clear(?string $key = null): bool
     {
         if ($key !== null) {
+            if (!file_exists($this->getFilename($key))) {
+                return true;
+            }
             return @unlink($this->getFilename($key)); // phpcs:ignore Generic.PHP.NoSilencedErrors
         }
 
