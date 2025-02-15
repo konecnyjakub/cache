@@ -32,7 +32,7 @@ final class IniFileJournalTest extends TestCase
         $metadata = $journal->get($key2);
         $this->assertSame(null, $metadata->expiresAt);
 
-        $journal->set($key1, new CacheItemMetadata());
+        $this->assertTrue($journal->set($key1, new CacheItemMetadata()));
         $this->assertFalse(file_exists($journal->getFilename()));
         $metadata = $journal->get($key1);
         $this->assertSame(null, $metadata->expiresAt);
@@ -41,7 +41,7 @@ final class IniFileJournalTest extends TestCase
         $this->assertSame(null, $metadata->expiresAt);
         $this->assertSame([], $metadata->tags);
 
-        $journal->set($key1, new CacheItemMetadata(30, ["tag1", "tag2", ]));
+        $this->assertTrue($journal->set($key1, new CacheItemMetadata(30, ["tag1", "tag2", ])));
         $this->assertTrue(file_exists($journal->getFilename()));
         $this->assertSame(
             "[abc]\nexpiresAt = 30\ntags[] = tag1\ntags[] = tag2\n",
@@ -55,7 +55,7 @@ final class IniFileJournalTest extends TestCase
         $this->assertSame(null, $metadata->expiresAt);
         $this->assertSame([], $metadata->tags);
 
-        $journal->clear($key1);
+        $this->assertTrue($journal->clear($key1));
         $this->assertSame([], $journal->getKeysByTags(["tag1", ]));
         $metadata = $journal->get($key1);
         $this->assertFalse(file_exists($journal->getFilename()));
@@ -66,8 +66,8 @@ final class IniFileJournalTest extends TestCase
         $this->assertSame(null, $metadata->expiresAt);
         $this->assertSame([], $metadata->tags);
 
-        $journal->set($key1, new CacheItemMetadata(40));
-        $journal->set($key2, new CacheItemMetadata(50));
+        $this->assertTrue($journal->set($key1, new CacheItemMetadata(40)));
+        $this->assertTrue($journal->set($key2, new CacheItemMetadata(50)));
         $this->assertTrue(file_exists($journal->getFilename()));
         $this->assertSame("[abc]\nexpiresAt = 40\n[def]\nexpiresAt = 50\n", file_get_contents($journal->getFilename()));
         $this->assertSame([], $journal->getKeysByTags(["tag1", ]));
@@ -78,7 +78,7 @@ final class IniFileJournalTest extends TestCase
         $this->assertSame(50, $metadata->expiresAt);
         $this->assertSame([], $metadata->tags);
 
-        $journal->clear();
+        $this->assertTrue($journal->clear());
         $this->assertFalse(file_exists($journal->getFilename()));
         $this->assertSame([], $journal->getKeysByTags(["tag1", ]));
         $metadata = $journal->get($key1);
