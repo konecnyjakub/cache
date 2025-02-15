@@ -1,6 +1,6 @@
 {
     "name": "konecnyjakub/cache",
-    "description": "A simple PSR-16 caching library",
+    "description": "A simple PSR-6 and PSR-16 caching library",
     "license": "BSD-3-Clause",
     "keywords": [
         "cache",
