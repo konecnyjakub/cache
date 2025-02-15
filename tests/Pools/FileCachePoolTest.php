@@ -143,6 +143,7 @@ final class FileCachePoolTest extends TestCase
         $items[$key2]->expiresAfter(30);
         $pool->saveDeferred($items[$key1]);
         $pool->saveDeferred($items[$key2]);
+        $pool->commit();
         $this->assertTrue($pool->clear());
         /** @var array{one: CacheItem, two: CacheItem} $items */
         $items = $pool->getItems([$key1, $key2, ]);
