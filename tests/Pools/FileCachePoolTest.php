@@ -31,7 +31,6 @@ final class FileCachePoolTest extends TestCase
         $this->assertSame(null, $item->get());
         $this->assertFalse($item->isHit());
         $this->assertFalse(file_exists($pool->getFilePath($key)));
-        $this->assertFalse(file_exists($pool->getMetaFilePath($key)));
 
         $item->set($value);
         $item->expiresAfter(-1);
@@ -42,7 +41,6 @@ final class FileCachePoolTest extends TestCase
         $this->assertSame(null, $item->get());
         $this->assertFalse($item->isHit());
         $this->assertTrue(file_exists($pool->getFilePath($key)));
-        $this->assertTrue(file_exists($pool->getMetaFilePath($key)));
 
         $item->set($value);
         $item->expiresAfter($ttl);
@@ -53,7 +51,6 @@ final class FileCachePoolTest extends TestCase
         $this->assertSame($value, $item->get());
         $this->assertTrue($item->isHit());
         $this->assertTrue(file_exists($pool->getFilePath($key)));
-        $this->assertTrue(file_exists($pool->getMetaFilePath($key)));
 
         $pool->deleteItem($key);
         $this->assertFalse($pool->hasItem($key));
@@ -62,7 +59,6 @@ final class FileCachePoolTest extends TestCase
         $this->assertSame(null, $item->get());
         $this->assertFalse($item->isHit());
         $this->assertFalse(file_exists($pool->getFilePath($key)));
-        $this->assertFalse(file_exists($pool->getMetaFilePath($key)));
     }
 
     public function testMultiKeysProcess(): void
@@ -85,9 +81,7 @@ final class FileCachePoolTest extends TestCase
         $this->assertSame(null, $items[$key2]->get());
         $this->assertFalse($items[$key2]->isHit());
         $this->assertFalse(file_exists($pool->getFilePath($key1)));
-        $this->assertFalse(file_exists($pool->getMetaFilePath($key1)));
         $this->assertFalse(file_exists($pool->getFilePath($key2)));
-        $this->assertFalse(file_exists($pool->getMetaFilePath($key2)));
 
         $items[$key1]->set($value1);
         $items[$key1]->expiresAfter(-1);
@@ -107,9 +101,7 @@ final class FileCachePoolTest extends TestCase
         $this->assertSame(null, $items[$key2]->get());
         $this->assertFalse($items[$key2]->isHit());
         $this->assertTrue(file_exists($pool->getFilePath($key1)));
-        $this->assertTrue(file_exists($pool->getMetaFilePath($key1)));
         $this->assertTrue(file_exists($pool->getFilePath($key2)));
-        $this->assertTrue(file_exists($pool->getMetaFilePath($key2)));
 
         $items[$key1]->set($value1);
         $items[$key1]->expiresAfter(30);
@@ -129,9 +121,7 @@ final class FileCachePoolTest extends TestCase
         $this->assertSame($value2, $items[$key2]->get());
         $this->assertTrue($items[$key2]->isHit());
         $this->assertTrue(file_exists($pool->getFilePath($key1)));
-        $this->assertTrue(file_exists($pool->getMetaFilePath($key1)));
         $this->assertTrue(file_exists($pool->getFilePath($key2)));
-        $this->assertTrue(file_exists($pool->getMetaFilePath($key2)));
 
         $pool->deleteItems([$key1, $key2, ]);
         $this->assertFalse($pool->hasItem($key1));
@@ -145,9 +135,7 @@ final class FileCachePoolTest extends TestCase
         $this->assertSame(null, $items[$key2]->get());
         $this->assertFalse($items[$key2]->isHit());
         $this->assertFalse(file_exists($pool->getFilePath($key1)));
-        $this->assertFalse(file_exists($pool->getMetaFilePath($key1)));
         $this->assertFalse(file_exists($pool->getFilePath($key2)));
-        $this->assertFalse(file_exists($pool->getMetaFilePath($key2)));
 
         $items[$key1]->set($value1);
         $items[$key1]->expiresAfter(30);
@@ -165,9 +153,7 @@ final class FileCachePoolTest extends TestCase
         $this->assertSame(null, $items[$key2]->get());
         $this->assertFalse($items[$key2]->isHit());
         $this->assertFalse(file_exists($pool->getFilePath($key1)));
-        $this->assertFalse(file_exists($pool->getMetaFilePath($key1)));
         $this->assertFalse(file_exists($pool->getFilePath($key2)));
-        $this->assertFalse(file_exists($pool->getMetaFilePath($key2)));
     }
 
     public function testDefaultTtl(): void

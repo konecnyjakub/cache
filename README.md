@@ -89,6 +89,8 @@ $cache->get("one"); // abc
 
 By default, different instance save to the same directory (if same value is passed for parameter directory) but it is possible to use a sub-directory to separate their files (and in turn values).
 
+This cache uses journal to handle items' metadata (e. g. expiration). The default implementation store metadata in human readable file(s) but you can use your own implementation (e. g. sqlite database). You only have to create a new class implementing the Konecnyjakub\Cache\Common\IJournal and pass its instance to FileCache's constructor (as parameter journal).
+
 ```php
 <?php
 declare(strict_types=1);

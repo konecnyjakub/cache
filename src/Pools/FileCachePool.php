@@ -4,8 +4,11 @@ declare(strict_types=1);
 namespace Konecnyjakub\Cache\Pools;
 
 use DirectoryIterator;
+use Konecnyjakub\Cache\Common\CacheItemMetadata;
 use Konecnyjakub\Cache\Common\IItemValueSerializer;
+use Konecnyjakub\Cache\Common\IJournal;
 use Konecnyjakub\Cache\Common\PhpSerializer;
+use Konecnyjakub\Cache\Common\SimpleFileJournal;
 use Psr\EventDispatcher\EventDispatcherInterface;
 use SplFileInfo;
 
@@ -18,11 +21,9 @@ final class FileCachePool extends BaseCachePool
 {
     private const string CACHE_FILE_EXTENSION = ".cache";
 
-    private const string META_FILE_EXTENSION = ".meta";
-
-    private const string META_EXPIRES_AT_TEXT = "expiresAt=";
-
     private readonly string $directory;
+
+    private readonly IJournal $journal;
 
     /**
      * @param string $directory Base directory for cache
@@ -35,7 +36,8 @@ final class FileCachePool extends BaseCachePool
         string $namespace = "",
         int $defaultTtl = 1000000000,
         private readonly IItemValueSerializer $serializer = new PhpSerializer(),
-        ?EventDispatcherInterface $eventDispatcher = null
+        ?EventDispatcherInterface $eventDispatcher = null,
+        ?IJournal $journal = null
     ) {
         parent::__construct($namespace, $defaultTtl, $eventDispatcher);
         if (!is_dir($directory) || !is_writable($directory)) {
@@ -48,6 +50,7 @@ final class FileCachePool extends BaseCachePool
         if ($this->namespace !== "" && !is_dir($this->getFullPath())) {
             mkdir($this->getFullPath(), 0755);
         }
+        $this->journal = $journal ?? new SimpleFileJournal($this->getFullPath());
     }
 
     protected function doGet(string $key): CacheItem
@@ -61,18 +64,12 @@ final class FileCachePool extends BaseCachePool
 
     protected function doHas(string $key): bool
     {
-        if (!file_exists($this->getFilePath($key)) || !file_exists($this->getMetaFilePath($key))) {
+        if (!file_exists($this->getFilePath($key))) {
             return false;
         }
-        /** @var list<string> $metaLines */
-        $metaLines = file($this->getMetaFilePath($key));
-        $expiresAt = PHP_INT_MAX;
-        foreach ($metaLines as $line) {
-            if (str_starts_with($line, self::META_EXPIRES_AT_TEXT)) {
-                $expiresAt = (int) str_replace(self::META_EXPIRES_AT_TEXT, "", $line);
-            }
-        }
-        return $expiresAt > time();
+
+        $meta = $this->journal->get($key);
+        return $meta->expiresAt === null || $meta->expiresAt > time();
     }
 
     protected function doClear(): bool
@@ -81,20 +78,18 @@ final class FileCachePool extends BaseCachePool
         /** @var SplFileInfo $fileInfo */ // @phpstan-ignore varTag.nativeType
         foreach (new DirectoryIterator($this->getFullPath()) as $fileInfo) {
             if (
-                str_ends_with($fileInfo->getFilename(), self::CACHE_FILE_EXTENSION) ||
-                str_ends_with($fileInfo->getFilename(), self::META_FILE_EXTENSION)
+                str_ends_with($fileInfo->getFilename(), self::CACHE_FILE_EXTENSION)
             ) {
                 $result = $result && @unlink($fileInfo->getPathname()); // phpcs:ignore Generic.PHP.NoSilencedErrors
             }
         }
-        return $result;
+        return $result && $this->journal->clear();
     }
 
     protected function doDelete(string $key): bool
     {
         $result = @unlink($this->getFilePath($key)); // phpcs:ignore Generic.PHP.NoSilencedErrors
-        $result = $result && @unlink($this->getMetaFilePath($key)); // phpcs:ignore Generic.PHP.NoSilencedErrors
-        return $result;
+        return $result && $this->journal->clear($key);
     }
 
     protected function doSave(CacheItem $item): bool
@@ -104,9 +99,7 @@ final class FileCachePool extends BaseCachePool
             $this->serializer->serialize($item->getValue()),
             LOCK_EX
         );
-        $meta = self::META_EXPIRES_AT_TEXT . ($item->getTtl() + time());
-        $result = $result && (bool) file_put_contents($this->getMetaFilePath($item->getKey()), $meta, LOCK_EX);
-        return $result;
+        return $result && $this->journal->set($item->getKey(), new CacheItemMetadata($item->getTtl() + time()));
     }
 
     /**
@@ -128,13 +121,5 @@ final class FileCachePool extends BaseCachePool
     public function getFilePath(string $key): string
     {
         return $this->getFullPath() . $key . self::CACHE_FILE_EXTENSION;
-    }
-
-    /**
-     * @internal
-     */
-    public function getMetaFilePath(string $key): string
-    {
-        return $this->getFullPath() . $key . self::META_FILE_EXTENSION;
     }
 }

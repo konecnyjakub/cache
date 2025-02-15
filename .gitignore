@@ -19,3 +19,5 @@ temp/
 
 # Generated cache in tests
 /tests/Simple/fileCache/
+/tests/Pools/fileCache/
+/tests/Common/fileCache/
