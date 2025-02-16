@@ -19,7 +19,6 @@ final readonly class IniFileJournal implements IJournal
             return new CacheItemMetadata();
         }
 
-        /** @var array<string, array<string, mixed>> $ini */
         $expiresAt = $ini[$key][self::KEY_EXPIRES_AT];
         /** @var string[] $tags */
         $tags = $ini[$key][self::KEY_TAGS] ?? [];
@@ -29,8 +28,6 @@ final readonly class IniFileJournal implements IJournal
     public function set(string $key, CacheItemMetadata $metadata): bool
     {
         $contents = $this->getParsedIni();
-
-        /** @var array<string, array<string, mixed>> $contents */
         $contents[$key] = [
             self::KEY_EXPIRES_AT => $metadata->expiresAt,
             self::KEY_TAGS => $metadata->tags,
