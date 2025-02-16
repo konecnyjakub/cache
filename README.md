@@ -286,6 +286,12 @@ $fileCache->has("two"); // false
 
 While all planned engines are present, there are more ways to cache things so is possible that more engines will be added in future versions. If there is one you would like to see, open a feature request and it will be considered.
 
+There are a few options that were considered but ultimately rejected. The list of those options (and reasons for rejecting them) follows.
+
+* Wincache - it is supported only on Windows (and probably only old versions) while this package is mainly tested (and expected to be used) on Linux based operating systems
+* database via PDO - this does not really make sense (one could just take the data from database) with the possible exception of sqlite
+* xcache - only PHP 5.x is supported while this package requires much newer versions
+
 #### Events
 
 Our engines (except ChainCache) can call your code when an event occurs - an item is successfully read from cache (cache hit), an item could not be read from cache or was expired (cache miss), an item was saved into cache, an item was deleted from cache and all items were deleted from cache. Just pass a [PSR-14 ](https://www.php-fig.org/psr/psr-14/) event dispatcher as parameter eventDispatcher into the engine's constructor. Classes for all possible events are in namespace Konecnyjakub\Cache\Events.
