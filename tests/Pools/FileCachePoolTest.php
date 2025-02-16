@@ -15,6 +15,7 @@ final class FileCachePoolTest extends TestCase
 {
     public function shutDown(): void
     {
+        (new FileCachePool(__DIR__, "fileCache"))->clear();
         rmdir(__DIR__ . DIRECTORY_SEPARATOR . "fileCache");
     }
 
@@ -65,7 +66,6 @@ final class FileCachePoolTest extends TestCase
     {
         $key1 = "one";
         $value1 = "abc";
-        $default = "default";
         $key2 = "two";
         $value2 = "def";
         $pool = new FileCachePool(__DIR__, "fileCache");
@@ -223,6 +223,59 @@ final class FileCachePoolTest extends TestCase
         /** @var Events\CacheClear $event */
         $event = $eventsLogger->events[4];
         $this->assertType(Events\CacheClear::class, $event);
+    }
+
+    public function testTags(): void
+    {
+        $key1 = "one";
+        $value1 = "abc";
+        $tags1 = ["tag1", "tag2", ];
+        $key2 = "two";
+        $value2 = "def";
+        $tags2 = ["tag2", ];
+        $pool = new FileCachePool(__DIR__, "fileCache");
+
+        $this->assertFalse($pool->hasItem($key1));
+        $this->assertFalse($pool->hasItem($key2));
+        /** @var array{one: CacheItem, two: CacheItem} $items */
+        $items = $pool->getItems([$key1, $key2, ]);
+        $items[$key1]->set($value1);
+        $items[$key1]->setTags($tags1);
+        $pool->saveDeferred($items[$key1]);
+        $items[$key2]->set($value2);
+        $items[$key2]->setTags($tags2);
+        $pool->saveDeferred($items[$key2]);
+        $pool->commit();
+        $this->assertTrue($pool->hasItem($key1));
+        $this->assertTrue($pool->hasItem($key2));
+        /** @var array{one: CacheItem, two: CacheItem} $items */
+        $items = $pool->getItems([$key1, $key2, ]);
+        $this->assertSame($key1, $items[$key1]->getKey());
+        $this->assertSame($value1, $items[$key1]->get());
+        $this->assertTrue($items[$key1]->isHit());
+        $this->assertSame($tags1, $items[$key1]->getTags());
+        $this->assertSame($key2, $items[$key2]->getKey());
+        $this->assertSame($value2, $items[$key2]->get());
+        $this->assertTrue($items[$key2]->isHit());
+        $this->assertSame($tags2, $items[$key2]->getTags());
+
+        $this->assertTrue($pool->invalidateTags(["tag3"]));
+        $this->assertTrue($pool->hasItem($key1));
+        $this->assertTrue($pool->hasItem($key2));
+
+        $this->assertTrue($pool->invalidateTags(["tag1"]));
+        $this->assertFalse($pool->hasItem($key1));
+        $this->assertTrue($pool->hasItem($key2));
+        /** @var array{one: CacheItem, two: CacheItem} $items */
+        $items = $pool->getItems([$key1, $key2, ]);
+        $this->assertSame($key1, $items[$key1]->getKey());
+        $this->assertSame(null, $items[$key1]->get());
+        $this->assertFalse($items[$key1]->isHit());
+        $this->assertSame([], $items[$key1]->getTags());
+        $this->assertSame($key2, $items[$key2]->getKey());
+        $this->assertSame($value2, $items[$key2]->get());
+        $this->assertTrue($items[$key2]->isHit());
+        $this->assertSame($tags2, $items[$key2]->getTags());
     }
 
     public function testExceptions(): void

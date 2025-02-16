@@ -17,7 +17,7 @@ use SplFileInfo;
  *
  * Stores values in a specified directory in the file system
  */
-final class FileCachePool extends BaseCachePool
+final class FileCachePool extends BaseCachePool implements ITaggableCachePool
 {
     private const string CACHE_FILE_EXTENSION = ".cache";
 
@@ -53,12 +53,24 @@ final class FileCachePool extends BaseCachePool
         $this->journal = $journal ?? new IniFileJournal($this->getFullPath());
     }
 
+    public function invalidateTags(array $tags): bool
+    {
+        $result = true;
+        $keys = $this->journal->getKeysByTags($tags);
+        foreach ($keys as $key) {
+            $result = $result && $this->deleteItem($key);
+        }
+        return $result;
+    }
+
     protected function doGet(string $key): CacheItem
     {
+        $metadata = $this->journal->get($key);
         return new CacheItem(
             $key,
             $this->serializer->unserialize((string) file_get_contents($this->getFilePath($key))),
-            true
+            true,
+            tags: $metadata->tags
         );
     }
 
@@ -99,7 +111,8 @@ final class FileCachePool extends BaseCachePool
             $this->serializer->serialize($item->getValue()),
             LOCK_EX
         );
-        return $result && $this->journal->set($item->getKey(), new CacheItemMetadata($item->getTtl() + time()));
+        return $result &&
+            $this->journal->set($item->getKey(), new CacheItemMetadata($item->getTtl() + time(), $item->getTags()));
     }
 
     /**

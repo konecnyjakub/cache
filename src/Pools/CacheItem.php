@@ -16,12 +16,14 @@ final class CacheItem implements CacheItemInterface
 
     /**
      * @internal
+     * @param string[] $tags
      */
     public function __construct(
         private readonly string $key,
         mixed $value = null,
         private readonly bool $hit = false,
-        private readonly ?int $defaultTtl = null
+        private readonly ?int $defaultTtl = null,
+        private array $tags = []
     ) {
         $this->value = is_object($value) ? clone $value : $value;
     }
@@ -81,5 +83,22 @@ final class CacheItem implements CacheItemInterface
             return (int) $this->defaultTtl;
         }
         return $this->expiresAt->getTimestamp() - time();
+    }
+
+    /**
+     * @return string[]
+     */
+    public function getTags(): array
+    {
+        return $this->tags;
+    }
+
+    /**
+     * @param string[] $tags
+     */
+    public function setTags(array $tags): self
+    {
+        $this->tags = $tags;
+        return $this;
     }
 }

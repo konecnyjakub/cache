@@ -26,7 +26,7 @@ interface IJournal
     public function clear(?string $key = null): bool;
 
     /**
-     * Get list of keys that has at least one of the listed tags
+     * Get list of keys that have at least one of the listed tags
      *
      * @param string[] $tags
      * @return string[]
