@@ -19,7 +19,7 @@ final readonly class IniFileJournal implements IJournal
             return new CacheItemMetadata();
         }
 
-        $expiresAt = $ini[$key][self::KEY_EXPIRES_AT];
+        $expiresAt = $ini[$key][self::KEY_EXPIRES_AT] ?? null;
         /** @var string[] $tags */
         $tags = $ini[$key][self::KEY_TAGS] ?? [];
         return new CacheItemMetadata(is_int($expiresAt) ? $expiresAt : null, $tags);
