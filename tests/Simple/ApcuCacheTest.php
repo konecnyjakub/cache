@@ -26,15 +26,15 @@ final class ApcuCacheTest extends TestCase
         $this->assertFalse($cache->has($key));
         $this->assertSame($default, $cache->get($key, $default));
 
-        $cache->set($key, $value, -1);
+        $this->assertTrue($cache->set($key, $value, -1));
         $this->assertFalse($cache->has($key));
         $this->assertSame($default, $cache->get($key, $default));
 
-        $cache->set($key, $value, DateInterval::createFromDateString("30 seconds"));
+        $this->assertTrue($cache->set($key, $value, DateInterval::createFromDateString("30 seconds")));
         $this->assertTrue($cache->has($key));
         $this->assertSame($value, $cache->get($key, $default));
 
-        $cache->delete($key);
+        $this->assertTrue($cache->delete($key));
         $this->assertFalse($cache->has($key));
         $this->assertSame($default, $cache->get($key, $default));
     }
@@ -56,7 +56,7 @@ final class ApcuCacheTest extends TestCase
             $cache->getMultiple([$key1, $key2, ], $default)
         );
 
-        $cache->setMultiple([$key1 => $value1, $key2 => $value2, ], -1);
+        $this->assertTrue($cache->setMultiple([$key1 => $value1, $key2 => $value2, ], -1));
         $this->assertFalse($cache->has($key1));
         $this->assertFalse($cache->has($key2));
         $this->assertSame(
@@ -64,7 +64,7 @@ final class ApcuCacheTest extends TestCase
             $cache->getMultiple([$key1, $key2, ], $default)
         );
 
-        $cache->setMultiple([$key1 => $value1, $key2 => $value2, ], 30);
+        $this->assertTrue($cache->setMultiple([$key1 => $value1, $key2 => $value2, ], 30));
         $this->assertTrue($cache->has($key1));
         $this->assertTrue($cache->has($key2));
         $this->assertSame(
@@ -72,7 +72,7 @@ final class ApcuCacheTest extends TestCase
             $cache->getMultiple([$key1, $key2, ], $default)
         );
 
-        $cache->deleteMultiple([$key1, $key2, ]);
+        $this->assertTrue($cache->deleteMultiple([$key1, $key2, ]));
         $this->assertFalse($cache->has($key1));
         $this->assertFalse($cache->has($key2));
         $this->assertSame(
@@ -80,8 +80,8 @@ final class ApcuCacheTest extends TestCase
             $cache->getMultiple([$key1, $key2, ], $default)
         );
 
-        $cache->setMultiple([$key1 => $value1, $key2 => $value2, ], 30);
-        $cache->clear();
+        $this->assertTrue($cache->setMultiple([$key1 => $value1, $key2 => $value2, ], 30));
+        $this->assertTrue($cache->clear());
         $this->assertFalse($cache->has($key1));
         $this->assertFalse($cache->has($key2));
         $this->assertSame(
@@ -97,10 +97,10 @@ final class ApcuCacheTest extends TestCase
         $value = "abc";
         $cache = new ApcuCache(defaultTtl: -1);
 
-        $cache->set($key, $value);
+        $this->assertTrue($cache->set($key, $value));
         $this->assertFalse($cache->has($key));
 
-        $cache->set($key, $value, 30);
+        $this->assertTrue($cache->set($key, $value, 30));
         $this->assertTrue($cache->has($key));
     }
 
@@ -116,16 +116,16 @@ final class ApcuCacheTest extends TestCase
         $cache2 = new ApcuCache(namespace: $namespace);
         $this->assertSame($namespace . ":" . $key2, $cache2->getKey($key2));
 
-        $cache1->set($key1, "abc");
+        $this->assertTrue($cache1->set($key1, "abc"));
         $this->assertTrue($cache1->has($key1));
         $this->assertFalse($cache2->has($key1));
-        $cache2->set($key2, "def");
+        $this->assertTrue($cache2->set($key2, "def"));
         $this->assertFalse($cache1->has($key2));
         $this->assertTrue($cache2->has($key2));
-        $cache2->clear();
+        $this->assertTrue($cache2->clear());
         $this->assertFalse($cache2->has($key2));
         $this->assertTrue($cache1->has($key1));
-        $cache1->clear();
+        $this->assertTrue($cache1->clear());
         $this->assertFalse($cache1->has($key1));
     }
 
@@ -136,7 +136,7 @@ final class ApcuCacheTest extends TestCase
 
         $key = "number";
         $value = 123;
-        $cache->set($key, $value);
+        $this->assertTrue($cache->set($key, $value));
         $this->assertSame($value, $cache->get($key));
         $this->assertType("int", $cache->get($key));
     }

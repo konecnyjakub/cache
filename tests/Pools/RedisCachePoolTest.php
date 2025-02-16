@@ -50,7 +50,7 @@ final class RedisCachePoolTest extends TestCase
 
         $item->set($value);
         $item->expiresAfter(-1);
-        $pool->save($item);
+        $this->assertTrue($pool->save($item));
         $this->assertFalse($pool->hasItem($key));
         $item = $pool->getItem($key);
         $this->assertSame($key, $item->getKey());
@@ -59,14 +59,14 @@ final class RedisCachePoolTest extends TestCase
 
         $item->set($value);
         $item->expiresAfter($ttl);
-        $pool->save($item);
+        $this->assertTrue($pool->save($item));
         $this->assertTrue($pool->hasItem($key));
         $item = $pool->getItem($key);
         $this->assertSame($key, $item->getKey());
         $this->assertSame($value, $item->get());
         $this->assertTrue($item->isHit());
 
-        $pool->deleteItem($key);
+        $this->assertTrue($pool->deleteItem($key));
         $this->assertFalse($pool->hasItem($key));
         $item = $pool->getItem($key);
         $this->assertSame($key, $item->getKey());
@@ -98,9 +98,9 @@ final class RedisCachePoolTest extends TestCase
         $items[$key1]->expiresAfter(-1);
         $items[$key2]->set($value2);
         $items[$key2]->expiresAfter(-1);
-        $pool->saveDeferred($items[$key1]);
-        $pool->saveDeferred($items[$key2]);
-        $pool->commit();
+        $this->assertTrue($pool->saveDeferred($items[$key1]));
+        $this->assertTrue($pool->saveDeferred($items[$key2]));
+        $this->assertTrue($pool->commit());
         $this->assertFalse($pool->hasItem($key1));
         $this->assertFalse($pool->hasItem($key2));
         /** @var array{one: CacheItem, two: CacheItem} $items */
@@ -116,9 +116,9 @@ final class RedisCachePoolTest extends TestCase
         $items[$key1]->expiresAfter(30);
         $items[$key2]->set($value2);
         $items[$key2]->expiresAfter(30);
-        $pool->saveDeferred($items[$key1]);
-        $pool->saveDeferred($items[$key2]);
-        $pool->commit();
+        $this->assertTrue($pool->saveDeferred($items[$key1]));
+        $this->assertTrue($pool->saveDeferred($items[$key2]));
+        $this->assertTrue($pool->commit());
         $this->assertTrue($pool->hasItem($key1));
         $this->assertTrue($pool->hasItem($key2));
         /** @var array{one: CacheItem, two: CacheItem} $items */
@@ -130,7 +130,7 @@ final class RedisCachePoolTest extends TestCase
         $this->assertSame($value2, $items[$key2]->get());
         $this->assertTrue($items[$key2]->isHit());
 
-        $pool->deleteItems([$key1, $key2, ]);
+        $this->assertTrue($pool->deleteItems([$key1, $key2, ]));
         $this->assertFalse($pool->hasItem($key1));
         $this->assertFalse($pool->hasItem($key2));
         /** @var array{one: CacheItem, two: CacheItem} $items */
@@ -146,8 +146,8 @@ final class RedisCachePoolTest extends TestCase
         $items[$key1]->expiresAfter(30);
         $items[$key2]->set($value2);
         $items[$key2]->expiresAfter(30);
-        $pool->saveDeferred($items[$key1]);
-        $pool->saveDeferred($items[$key2]);
+        $this->assertTrue($pool->saveDeferred($items[$key1]));
+        $this->assertTrue($pool->saveDeferred($items[$key2]));
         $this->assertTrue($pool->clear());
         /** @var array{one: CacheItem, two: CacheItem} $items */
         $items = $pool->getItems([$key1, $key2, ]);
@@ -168,11 +168,11 @@ final class RedisCachePoolTest extends TestCase
 
         $item = $pool->getItem($key);
         $item->set($value);
-        $pool->save($item);
+        $this->assertTrue($pool->save($item));
         $this->assertFalse($pool->hasItem($key));
 
         $item->expiresAfter(30);
-        $pool->save($item);
+        $this->assertTrue($pool->save($item));
         $this->assertTrue($pool->hasItem($key));
     }
 
@@ -190,18 +190,18 @@ final class RedisCachePoolTest extends TestCase
 
         $item1 = $pool1->getItem($key1);
         $item1->set("abc");
-        $pool1->save($item1);
+        $this->assertTrue($pool1->save($item1));
         $this->assertTrue($pool1->hasItem($key1));
         $this->assertFalse($pool2->hasItem($key1));
         $item2 = $pool2->getItem($key2);
         $item2->set("def");
-        $pool2->save($item2);
+        $this->assertTrue($pool2->save($item2));
         $this->assertTrue($pool2->hasItem($key2));
         $this->assertFalse($pool1->hasItem($key2));
-        $pool2->clear();
+        $this->assertTrue($pool2->clear());
         $this->assertFalse($pool2->hasItem($key2));
         $this->assertTrue($pool1->hasItem($key1));
-        $pool1->clear();
+        $this->assertTrue($pool1->clear());
         $this->assertFalse($pool1->hasItem($key1));
     }
 
@@ -214,7 +214,7 @@ final class RedisCachePoolTest extends TestCase
         $value = 123;
         $item = $pool->getItem($key);
         $item->set($value);
-        $pool->save($item);
+        $this->assertTrue($pool->save($item));
         $item = $pool->getItem($key);
         $this->assertSame($value, $item->get());
         $this->assertType("int", $item->get());

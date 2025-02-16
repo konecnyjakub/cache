@@ -35,7 +35,7 @@ final class FileCachePoolTest extends TestCase
 
         $item->set($value);
         $item->expiresAfter(-1);
-        $pool->save($item);
+        $this->assertTrue($pool->save($item));
         $this->assertFalse($pool->hasItem($key));
         $item = $pool->getItem($key);
         $this->assertSame($key, $item->getKey());
@@ -45,7 +45,7 @@ final class FileCachePoolTest extends TestCase
 
         $item->set($value);
         $item->expiresAfter($ttl);
-        $pool->save($item);
+        $this->assertTrue($pool->save($item));
         $this->assertTrue($pool->hasItem($key));
         $item = $pool->getItem($key);
         $this->assertSame($key, $item->getKey());
@@ -53,7 +53,7 @@ final class FileCachePoolTest extends TestCase
         $this->assertTrue($item->isHit());
         $this->assertTrue(file_exists($pool->getFilePath($key)));
 
-        $pool->deleteItem($key);
+        $this->assertTrue($pool->deleteItem($key));
         $this->assertFalse($pool->hasItem($key));
         $item = $pool->getItem($key);
         $this->assertSame($key, $item->getKey());
@@ -87,9 +87,9 @@ final class FileCachePoolTest extends TestCase
         $items[$key1]->expiresAfter(-1);
         $items[$key2]->set($value2);
         $items[$key2]->expiresAfter(-1);
-        $pool->saveDeferred($items[$key1]);
-        $pool->saveDeferred($items[$key2]);
-        $pool->commit();
+        $this->assertTrue($pool->saveDeferred($items[$key1]));
+        $this->assertTrue($pool->saveDeferred($items[$key2]));
+        $this->assertTrue($pool->commit());
         $this->assertFalse($pool->hasItem($key1));
         $this->assertFalse($pool->hasItem($key2));
         /** @var array{one: CacheItem, two: CacheItem} $items */
@@ -107,9 +107,9 @@ final class FileCachePoolTest extends TestCase
         $items[$key1]->expiresAfter(30);
         $items[$key2]->set($value2);
         $items[$key2]->expiresAfter(30);
-        $pool->saveDeferred($items[$key1]);
-        $pool->saveDeferred($items[$key2]);
-        $pool->commit();
+        $this->assertTrue($pool->saveDeferred($items[$key1]));
+        $this->assertTrue($pool->saveDeferred($items[$key2]));
+        $this->assertTrue($pool->commit());
         $this->assertTrue($pool->hasItem($key1));
         $this->assertTrue($pool->hasItem($key2));
         /** @var array{one: CacheItem, two: CacheItem} $items */
@@ -123,7 +123,7 @@ final class FileCachePoolTest extends TestCase
         $this->assertTrue(file_exists($pool->getFilePath($key1)));
         $this->assertTrue(file_exists($pool->getFilePath($key2)));
 
-        $pool->deleteItems([$key1, $key2, ]);
+        $this->assertTrue($pool->deleteItems([$key1, $key2, ]));
         $this->assertFalse($pool->hasItem($key1));
         $this->assertFalse($pool->hasItem($key2));
         /** @var array{one: CacheItem, two: CacheItem} $items */
@@ -141,9 +141,9 @@ final class FileCachePoolTest extends TestCase
         $items[$key1]->expiresAfter(30);
         $items[$key2]->set($value2);
         $items[$key2]->expiresAfter(30);
-        $pool->saveDeferred($items[$key1]);
-        $pool->saveDeferred($items[$key2]);
-        $pool->commit();
+        $this->assertTrue($pool->saveDeferred($items[$key1]));
+        $this->assertTrue($pool->saveDeferred($items[$key2]));
+        $this->assertTrue($pool->commit());
         $this->assertTrue($pool->clear());
         /** @var array{one: CacheItem, two: CacheItem} $items */
         $items = $pool->getItems([$key1, $key2, ]);
@@ -165,11 +165,11 @@ final class FileCachePoolTest extends TestCase
 
         $item = $pool->getItem($key);
         $item->set($value);
-        $pool->save($item);
+        $this->assertTrue($pool->save($item));
         $this->assertFalse($pool->hasItem($key));
 
         $item->expiresAfter(30);
-        $pool->save($item);
+        $this->assertTrue($pool->save($item));
         $this->assertTrue($pool->hasItem($key));
     }
 
@@ -181,7 +181,7 @@ final class FileCachePoolTest extends TestCase
         $value = 123;
         $item = $pool->getItem($key);
         $item->set($value);
-        $pool->save($item);
+        $this->assertTrue($pool->save($item));
         $item = $pool->getItem($key);
         $this->assertSame($value, $item->get());
         $this->assertType("int", $item->get());

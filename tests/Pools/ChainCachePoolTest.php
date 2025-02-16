@@ -38,7 +38,7 @@ final class ChainCachePoolTest extends TestCase
         $item = $pool->getItem($key);
         $item->set($value);
         $item->expiresAfter(-1);
-        $pool->save($item);
+        $this->assertTrue($pool->save($item));
         $this->assertFalse($pool->hasItem($key));
         $this->assertFalse($pool1->hasItem($key));
         $this->assertFalse($pool2->hasItem($key));
@@ -78,7 +78,7 @@ final class ChainCachePoolTest extends TestCase
         $item = $pool->getItem($key);
         $item->set($value);
         $item->expiresAfter(30);
-        $pool->save($item);
+        $this->assertTrue($pool->save($item));
         $this->assertTrue($pool->hasItem($key));
         $this->assertTrue($pool1->hasItem($key));
         $this->assertTrue($pool2->hasItem($key));
@@ -95,7 +95,7 @@ final class ChainCachePoolTest extends TestCase
         $this->assertSame($value, $item->get());
         $this->assertTrue($item->isHit());
 
-        $pool->deleteItem($key);
+        $this->assertTrue($pool->deleteItem($key));
         $this->assertFalse($pool->hasItem($key));
         $this->assertFalse($pool1->hasItem($key));
         $this->assertFalse($pool2->hasItem($key));
@@ -160,9 +160,9 @@ final class ChainCachePoolTest extends TestCase
         $items[$key1]->expiresAfter(-1);
         $items[$key2]->set($value2);
         $items[$key2]->expiresAfter(-1);
-        $pool->saveDeferred($items[$key1]);
-        $pool->saveDeferred($items[$key2]);
-        $pool->commit();
+        $this->assertTrue($pool->saveDeferred($items[$key1]));
+        $this->assertTrue($pool->saveDeferred($items[$key2]));
+        $this->assertTrue($pool->commit());
         $this->assertFalse($pool->hasItem($key1));
         $this->assertFalse($pool1->hasItem($key1));
         $this->assertFalse($pool2->hasItem($key1));
@@ -198,9 +198,9 @@ final class ChainCachePoolTest extends TestCase
         $items[$key1]->expiresAfter(30);
         $items[$key2]->set($value2);
         $items[$key2]->expiresAfter(30);
-        $pool->saveDeferred($items[$key1]);
-        $pool->saveDeferred($items[$key2]);
-        $pool->commit();
+        $this->assertTrue($pool->saveDeferred($items[$key1]));
+        $this->assertTrue($pool->saveDeferred($items[$key2]));
+        $this->assertTrue($pool->commit());
         $this->assertTrue($pool->hasItem($key1));
         $this->assertTrue($pool1->hasItem($key1));
         $this->assertTrue($pool2->hasItem($key1));
@@ -232,7 +232,7 @@ final class ChainCachePoolTest extends TestCase
         $this->assertSame($value2, $items[$key2]->get());
         $this->assertTrue($items[$key2]->isHit());
 
-        $pool->deleteItems([$key1, $key2, ]);
+        $this->assertTrue($pool->deleteItems([$key1, $key2, ]));
         $this->assertFalse($pool->hasItem($key1));
         $this->assertFalse($pool1->hasItem($key1));
         $this->assertFalse($pool2->hasItem($key1));
@@ -268,10 +268,10 @@ final class ChainCachePoolTest extends TestCase
         $items[$key1]->expiresAfter(30);
         $items[$key2]->set($value2);
         $items[$key2]->expiresAfter(30);
-        $pool->saveDeferred($items[$key1]);
-        $pool->saveDeferred($items[$key2]);
-        $pool->commit();
-        $pool->clear();
+        $this->assertTrue($pool->saveDeferred($items[$key1]));
+        $this->assertTrue($pool->saveDeferred($items[$key2]));
+        $this->assertTrue($pool->commit());
+        $this->assertTrue($pool->clear());
         $this->assertFalse($pool->hasItem($key1));
         $this->assertFalse($pool1->hasItem($key1));
         $this->assertFalse($pool2->hasItem($key1));

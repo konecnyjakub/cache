@@ -23,15 +23,15 @@ final class MemoryCacheTest extends TestCase
         $this->assertFalse($cache->has($key));
         $this->assertSame($default, $cache->get($key, $default));
 
-        $cache->set($key, $value, -1);
+        $this->assertTrue($cache->set($key, $value, -1));
         $this->assertFalse($cache->has($key));
         $this->assertSame($default, $cache->get($key, $default));
 
-        $cache->set($key, $value, 30);
+        $this->assertTrue($cache->set($key, $value, 30));
         $this->assertTrue($cache->has($key));
         $this->assertSame($value, $cache->get($key, $default));
 
-        $cache->delete($key);
+        $this->assertTrue($cache->delete($key));
         $this->assertFalse($cache->has($key));
         $this->assertSame($default, $cache->get($key, $default));
     }
@@ -52,7 +52,7 @@ final class MemoryCacheTest extends TestCase
             $cache->getMultiple([$key1, $key2, ], $default)
         );
 
-        $cache->setMultiple([$key1 => $value1, $key2 => $value2, ], -1);
+        $this->assertTrue($cache->setMultiple([$key1 => $value1, $key2 => $value2, ], -1));
         $this->assertFalse($cache->has($key1));
         $this->assertFalse($cache->has($key2));
         $this->assertSame(
@@ -60,7 +60,7 @@ final class MemoryCacheTest extends TestCase
             $cache->getMultiple([$key1, $key2, ], $default)
         );
 
-        $cache->setMultiple([$key1 => $value1, $key2 => $value2, ], 30);
+        $this->assertTrue($cache->setMultiple([$key1 => $value1, $key2 => $value2, ], 30));
         $this->assertTrue($cache->has($key1));
         $this->assertTrue($cache->has($key2));
         $this->assertSame(
@@ -68,7 +68,7 @@ final class MemoryCacheTest extends TestCase
             $cache->getMultiple([$key1, $key2, ], $default)
         );
 
-        $cache->deleteMultiple([$key1, $key2, ]);
+        $this->assertTrue($cache->deleteMultiple([$key1, $key2, ]));
         $this->assertFalse($cache->has($key1));
         $this->assertFalse($cache->has($key2));
         $this->assertSame(
@@ -76,8 +76,8 @@ final class MemoryCacheTest extends TestCase
             $cache->getMultiple([$key1, $key2, ], $default)
         );
 
-        $cache->setMultiple([$key1 => $value1, $key2 => $value2, ], 30);
-        $cache->clear();
+        $this->assertTrue($cache->setMultiple([$key1 => $value1, $key2 => $value2, ], 30));
+        $this->assertTrue($cache->clear());
         $this->assertFalse($cache->has($key1));
         $this->assertFalse($cache->has($key2));
         $this->assertSame(
@@ -92,10 +92,10 @@ final class MemoryCacheTest extends TestCase
         $value = "abc";
         $cache = new MemoryCache(defaultTtl: -1);
 
-        $cache->set($key, $value);
+        $this->assertTrue($cache->set($key, $value));
         $this->assertFalse($cache->has($key));
 
-        $cache->set($key, $value, 30);
+        $this->assertTrue($cache->set($key, $value, 30));
         $this->assertTrue($cache->has($key));
     }
 
@@ -105,7 +105,7 @@ final class MemoryCacheTest extends TestCase
 
         $key = "number";
         $value = 123;
-        $cache->set($key, $value);
+        $this->assertTrue($cache->set($key, $value));
         $this->assertSame($value, $cache->get($key));
         $this->assertType("int", $cache->get($key));
     }
