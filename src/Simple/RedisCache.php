@@ -37,7 +37,7 @@ final class RedisCache extends BaseCache
         return $this->serializer->unserialize($this->client->get($this->getKey($key))); // @phpstan-ignore argument.type
     }
 
-    protected function doSet(string $key, mixed $value, DateInterval|int|null $ttl): bool
+    protected function doSet(string $key, mixed $value, DateInterval|int|null $ttl, array $tags = []): bool
     {
         if ((is_int($ttl) && $ttl < 0)) {
             return true;

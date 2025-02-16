@@ -40,11 +40,14 @@ abstract class BaseCache implements CacheInterface
         return $value;
     }
 
-    public function set(string $key, mixed $value, \DateInterval|int|null $ttl = null): bool
+    /**
+     * @param string[] $tags
+     */
+    public function set(string $key, mixed $value, \DateInterval|int|null $ttl = null, array $tags = []): bool
     {
         $this->validateKey($key);
         $this->eventDispatcher?->dispatch(new Events\CacheSave($key, $value));
-        return $this->doSet($key, $value, $ttl ?? $this->defaultTtl);
+        return $this->doSet($key, $value, $ttl ?? $this->defaultTtl, $tags);
     }
 
     public function delete(string $key): bool
@@ -113,7 +116,10 @@ abstract class BaseCache implements CacheInterface
 
     abstract protected function doGet(string $key): mixed;
 
-    abstract protected function doSet(string $key, mixed $value, \DateInterval|int|null $ttl): bool;
+    /**
+     * @param string[] $tags
+     */
+    abstract protected function doSet(string $key, mixed $value, \DateInterval|int|null $ttl, array $tags = []): bool;
 
     abstract protected function doDelete(string $key): bool;
 

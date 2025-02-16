@@ -31,7 +31,7 @@ final class MemoryCache extends BaseCache
         return $this->items[$key]->value;
     }
 
-    protected function doSet(string $key, mixed $value, DateInterval|int|null $ttl): bool
+    protected function doSet(string $key, mixed $value, DateInterval|int|null $ttl, array $tags = []): bool
     {
         $this->items[$key] = new CacheItem($value, $ttl);
         return true;

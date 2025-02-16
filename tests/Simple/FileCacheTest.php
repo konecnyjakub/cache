@@ -3,6 +3,8 @@ declare(strict_types=1);
 
 namespace Konecnyjakub\Cache\Simple;
 
+use Konecnyjakub\Cache\Common\CacheItemMetadata;
+use Konecnyjakub\Cache\Common\IniFileJournal;
 use Konecnyjakub\Cache\Events;
 use Konecnyjakub\Cache\TestEventsLogger;
 use Konecnyjakub\EventDispatcher\AutoListenerProvider;
@@ -15,6 +17,7 @@ final class FileCacheTest extends TestCase
 {
     public function shutDown(): void
     {
+        (new FileCache(__DIR__, "fileCache"))->clear();
         rmdir(__DIR__ . DIRECTORY_SEPARATOR . "fileCache");
     }
 
@@ -167,6 +170,33 @@ final class FileCacheTest extends TestCase
         /** @var Events\CacheClear $event */
         $event = $eventsLogger->events[4];
         $this->assertType(Events\CacheClear::class, $event);
+    }
+
+    public function testTags(): void
+    {
+        $key1 = "one";
+        $value1 = "abc";
+        $tags1 = ["tag1", "tag2", ];
+        $key2 = "two";
+        $value2 = "def";
+        $tags2 = ["tag2", ];
+        $journal = new IniFileJournal(__DIR__ . DIRECTORY_SEPARATOR . "fileCache");
+        $cache = new FileCache(__DIR__, "fileCache", journal: $journal);
+
+        $this->assertFalse($cache->has($key1));
+        $this->assertFalse($cache->has($key2));
+        $this->assertTrue($cache->set($key1, $value1, tags: $tags1));
+        $this->assertTrue($cache->set($key2, $value2, tags: $tags2));
+        $this->assertTrue($cache->has($key1));
+        $this->assertTrue($cache->has($key2));
+
+        $this->assertTrue($cache->invalidateTags(["tag3", ]));
+        $this->assertTrue($cache->has($key1));
+        $this->assertTrue($cache->has($key2));
+
+        $this->assertTrue($cache->invalidateTags(["tag1", ]));
+        $this->assertFalse($cache->has($key1));
+        $this->assertTrue($cache->has($key2));
     }
 
     public function testExceptions(): void

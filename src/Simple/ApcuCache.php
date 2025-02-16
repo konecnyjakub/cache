@@ -33,7 +33,7 @@ final class ApcuCache extends BaseCache
         return $success ? $value : null;
     }
 
-    protected function doSet(string $key, mixed $value, DateInterval|int|null $ttl): bool
+    protected function doSet(string $key, mixed $value, DateInterval|int|null $ttl, array $tags = []): bool
     {
         if ($ttl instanceof DateInterval) {
             $ttl = (new DateTime())->add($ttl)->getTimestamp() - time();

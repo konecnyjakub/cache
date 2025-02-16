@@ -23,7 +23,7 @@ final class NullCache extends BaseCache
         return null;
     }
 
-    protected function doSet(string $key, mixed $value, DateInterval|int|null $ttl): bool
+    protected function doSet(string $key, mixed $value, DateInterval|int|null $ttl, array $tags = []): bool
     {
         return true;
     }
