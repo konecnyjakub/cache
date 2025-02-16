@@ -58,20 +58,17 @@ final readonly class IniFileJournal implements IJournal
         return $this->set($key, new CacheItemMetadata());
     }
 
-    public function getKeysByTags(array $tags): array
+    public function getKeysByTags(array $tags): iterable
     {
-        $keys = [];
         $ini = $this->getParsedIni();
 
         foreach ($ini as $key => $values) {
             /** @var string[] $keyTags */
             $keyTags = $values[self::KEY_TAGS] ?? [];
             if (count(array_intersect($tags, $keyTags)) > 0) {
-                $keys[] = $key;
+                yield $key;
             }
         }
-
-        return $keys;
     }
 
     /**

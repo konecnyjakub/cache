@@ -31,5 +31,5 @@ interface IJournal
      * @param string[] $tags
      * @return string[]
      */
-    public function getKeysByTags(array $tags): array;
+    public function getKeysByTags(array $tags): iterable;
 }

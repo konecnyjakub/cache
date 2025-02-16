@@ -73,10 +73,8 @@ final readonly class SimpleFileJournal implements IJournal
         return $result;
     }
 
-    public function getKeysByTags(array $tags): array
+    public function getKeysByTags(array $tags): iterable
     {
-        $keys = [];
-
         /** @var SplFileInfo $fileInfo */ // @phpstan-ignore varTag.nativeType
         foreach (new DirectoryIterator($this->directory) as $fileInfo) {
             if (
@@ -85,12 +83,10 @@ final readonly class SimpleFileJournal implements IJournal
                 $key = $fileInfo->getBasename(self::FILE_EXTENSION);
                 $metadata = $this->get($key);
                 if (count(array_intersect($tags, $metadata->tags)) > 0) {
-                    $keys[] = $key;
+                    yield $key;
                 }
             }
         }
-
-        return $keys;
     }
 
     /**
