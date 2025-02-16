@@ -41,9 +41,17 @@ This package implements both PSR-6 and PSR-16. Usage with PSR-16 is described be
 
 This package has more engines for caching which are more useful than MemoryCache. Each available one will be described in detail below.
 
+### Advances features
+
+Engines may support one or more advanced features. All advanced features are described in this section and sections about specific engines say which features are support and how are they used with the engine.
+
+One advance feature is default lifetime of items, it is used when ttl is not specified for an item. Engines provided in this package generally support, but a few (where it does not make sense) do not.
+
+Another is namespace. Normally, different instances of an engine have access to same values but if you set a namespace for the instances, same keys can have different values in different instances. Do note that not all engines can (fully) use this (and that some may use it automatically).
+
 #### Memory
 
-It was already mentioned in quick start as it is the most simple engine that does something. It supports setting default lifetime of items (it is used if you do not specify it for an item).
+It was already mentioned in quick start as it is the most simple engine that does something. It supports setting default lifetime of items, different instances are automatically separate (each one holds different values).
 
 ```php
 <?php
@@ -162,7 +170,7 @@ $cache->set("one", "abc"); // this item will expire after 2 seconds
 $cache->set("two", "def", 3); // this item will expire after 3 seconds
 ```
 
-Be aware that different instances have access to same values.
+Be aware that different instances have access to same values. While namespaces would mostly work in memcached, it is not possible to reliably clear all items in a namespace (just all items).
 
 #### Redis
 
