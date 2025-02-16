@@ -148,6 +148,32 @@ final class MemoryCacheTest extends TestCase
         $this->assertType(Events\CacheClear::class, $event);
     }
 
+    public function testTags(): void
+    {
+        $key1 = "one";
+        $value1 = "abc";
+        $tags1 = ["tag1", "tag2", ];
+        $key2 = "two";
+        $value2 = "def";
+        $tags2 = ["tag2", ];
+        $cache = new MemoryCache();
+
+        $this->assertFalse($cache->has($key1));
+        $this->assertFalse($cache->has($key2));
+        $this->assertTrue($cache->set($key1, $value1, tags: $tags1));
+        $this->assertTrue($cache->set($key2, $value2, tags: $tags2));
+        $this->assertTrue($cache->has($key1));
+        $this->assertTrue($cache->has($key2));
+
+        $this->assertTrue($cache->invalidateTags(["tag3", ]));
+        $this->assertTrue($cache->has($key1));
+        $this->assertTrue($cache->has($key2));
+
+        $this->assertTrue($cache->invalidateTags(["tag1", ]));
+        $this->assertFalse($cache->has($key1));
+        $this->assertTrue($cache->has($key2));
+    }
+
     public function testExceptions(): void
     {
         $cache = new MemoryCache();

@@ -51,6 +51,8 @@ Another is namespace. Normally, different instances of an engine have access to 
 
 There is also journal which is used to store various metadata (e. g. expiration and tags) for an item if it is not supported natively by the engine. At the moment, only file based caches support this feature.
 
+Some engines support tags. Tags for an item can be set saving the item into cache and then can be used to delete multiple items from cache at the same time. Tags can be arbitrary strings. The engines supporting this implement interface Konecnyjakub\Cache\Simple\ITaggableCache (for PSR-16 caches) or Konecnyjakub\Cache\Pools\ITaggableCachePool (for PSR-6 cache pools). When invalidating tags with method invalidateTags, all items with at least one of the listed tags, will be deleted.
+
 #### Memory
 
 It was already mentioned in quick start as it is the most simple engine that does something. It supports setting default lifetime of items, different instances are automatically separate (each one holds different values).
@@ -64,6 +66,22 @@ use Konecnyjakub\Cache\Simple\MemoryCache;
 $cache = new MemoryCache(defaultTtl: 2);
 $cache->set("one", "abc"); // this item will expire after 2 seconds
 $cache->set("two", "def", 3); // this item will expire after 3 seconds
+```
+
+This engine also supports tags.
+
+```php
+<?php
+declare(strict_types=1);
+
+use Konecnyjakub\Cache\Simple\MemoryCache;
+
+$cache = new MemoryCache();
+$cache->set("one", "abc", ["tag1", "tag2", ]);
+$cache->set("two", "def", ["tag2", ]);
+$cache->invalidateTags(["tag1", ])
+$cache->has("one"); // true
+$cache->has("two"); // false
 ```
 
 #### Null
@@ -117,7 +135,7 @@ $cache2->has("two"); // true
 
 Files for expired items are not automatically deleted, it has to be done manually at the moment.
 
-This cache uses journal to handle items' metadata (e. g. expiration, tags). The default implementation store metadata in human readable file(s) but you can use your own implementation (e. g. sqlite database). You only have to create a new class implementing the Konecnyjakub\Cache\Common\IJournal and pass its instance to FileCache's constructor (as parameter journal). Tags can be used to delete multiple items from the cache, they can be arbitrary strings. When invalidating tags, all items with at least one of the listed tags, will be deleted. Example:
+This cache uses journal to handle items' metadata (e. g. expiration, tags). The default implementation store metadata in human readable file(s) but you can use your own implementation (e. g. sqlite database). You only have to create a new class implementing the Konecnyjakub\Cache\Common\IJournal and pass its instance to FileCache's constructor (as parameter journal). Tags can be used to delete multiple items from the cache. Example:
 
 ```php
 <?php

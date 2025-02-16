@@ -11,7 +11,7 @@ use Psr\EventDispatcher\EventDispatcherInterface;
  *
  * Stores values during the current request
  */
-final class MemoryCache extends BaseCache
+final class MemoryCache extends BaseCache implements ITaggableCache
 {
     /** @var array<string, CacheItem> */
     private array $items = [];
@@ -26,6 +26,17 @@ final class MemoryCache extends BaseCache
         parent::__construct("", $defaultTtl, $eventDispatcher);
     }
 
+    public function invalidateTags(array $tags): bool
+    {
+        $result = true;
+        foreach ($this->items as $key => $item) {
+            if (count(array_intersect($tags, $item->tags)) > 0) {
+                $result = $result && $this->delete($key);
+            }
+        }
+        return $result;
+    }
+
     protected function doGet(string $key): mixed
     {
         return $this->items[$key]->value;
@@ -33,7 +44,7 @@ final class MemoryCache extends BaseCache
 
     protected function doSet(string $key, mixed $value, DateInterval|int|null $ttl, array $tags = []): bool
     {
-        $this->items[$key] = new CacheItem($value, $ttl);
+        $this->items[$key] = new CacheItem($value, $ttl, $tags);
         return true;
     }
 

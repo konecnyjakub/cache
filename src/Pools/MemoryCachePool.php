@@ -10,7 +10,7 @@ use Psr\EventDispatcher\EventDispatcherInterface;
  *
  * Stores values during the current request
  */
-final class MemoryCachePool extends BaseCachePool
+final class MemoryCachePool extends BaseCachePool implements ITaggableCachePool
 {
     /** @var array<string, CacheItem> */
     private array $items = [];
@@ -23,6 +23,17 @@ final class MemoryCachePool extends BaseCachePool
         ?EventDispatcherInterface $eventDispatcher = null
     ) {
         parent::__construct("", $defaultTtl, $eventDispatcher);
+    }
+
+    public function invalidateTags(array $tags): bool
+    {
+        $result = true;
+        foreach ($this->items as $key => $item) {
+            if (count(array_intersect($tags, $item->getTags())) > 0) {
+                $result = $result && $this->deleteItem($key);
+            }
+        }
+        return $result;
     }
 
     protected function doGet(string $key): CacheItem
@@ -50,7 +61,7 @@ final class MemoryCachePool extends BaseCachePool
     protected function doSave(CacheItem $item): bool
     {
         if ($item->getTtl() >= 0) {
-            $newItem = new CacheItem($item->getKey(), $item->getValue(), true, $this->defaultTtl);
+            $newItem = new CacheItem($item->getKey(), $item->getValue(), true, $this->defaultTtl, $item->getTags());
             $newItem->expiresAfter($item->getTtl());
             $this->items[$item->getKey()] = $newItem;
         }

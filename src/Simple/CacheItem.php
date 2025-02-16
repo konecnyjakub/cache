@@ -17,7 +17,10 @@ final readonly class CacheItem
 
     public ?int $expiresAt;
 
-    public function __construct(mixed $value, DateInterval|int|null $ttl = null)
+    /**
+     * @param string[] $tags
+     */
+    public function __construct(mixed $value, DateInterval|int|null $ttl = null, public array $tags = [])
     {
         $this->value = is_object($value) ? clone $value : $value;
         $this->expiresAt = match (true) {
