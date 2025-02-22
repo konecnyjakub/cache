@@ -14,7 +14,7 @@ use MyTester\TestCase;
 #[TestSuite("FileCache")]
 final class FileCacheTest extends TestCase
 {
-    public function shutDown(): void
+    public function tearDown(): void
     {
         (new FileCache(__DIR__, "fileCache"))->clear();
         rmdir(__DIR__ . DIRECTORY_SEPARATOR . "fileCache");

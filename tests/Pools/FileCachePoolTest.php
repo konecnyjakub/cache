@@ -13,7 +13,7 @@ use MyTester\TestCase;
 #[TestSuite("FileCachePool")]
 final class FileCachePoolTest extends TestCase
 {
-    public function shutDown(): void
+    public function tearDown(): void
     {
         (new FileCachePool(__DIR__, "fileCache"))->clear();
         rmdir(__DIR__ . DIRECTORY_SEPARATOR . "fileCache");

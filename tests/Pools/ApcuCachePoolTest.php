@@ -14,6 +14,12 @@ use MyTester\TestCase;
 #[TestSuite("ApcuCachePool")]
 final class ApcuCachePoolTest extends TestCase
 {
+    public function tearDown(): void
+    {
+        parent::tearDown();
+        (new ApcuCachePool())->clear();
+    }
+
     #[RequiresPhpExtension("apcu")]
     public function testSingleKeyProcess(): void
     {
