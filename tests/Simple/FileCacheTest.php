@@ -3,7 +3,6 @@ declare(strict_types=1);
 
 namespace Konecnyjakub\Cache\Simple;
 
-use Konecnyjakub\Cache\Common\CacheItemMetadata;
 use Konecnyjakub\Cache\Common\IniFileJournal;
 use Konecnyjakub\Cache\Events;
 use Konecnyjakub\Cache\TestEventsLogger;
