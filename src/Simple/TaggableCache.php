@@ -8,7 +8,7 @@ use Psr\SimpleCache\CacheInterface;
 /**
  * Cache that supports tags
  */
-interface ITaggableCache extends CacheInterface
+interface TaggableCache extends CacheInterface
 {
     /**
      * @param string[] $tags

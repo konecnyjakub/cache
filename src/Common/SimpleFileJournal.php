@@ -6,7 +6,7 @@ namespace Konecnyjakub\Cache\Common;
 use DirectoryIterator;
 use SplFileInfo;
 
-final readonly class SimpleFileJournal implements IJournal
+final readonly class SimpleFileJournal implements Journal
 {
     private const string FILE_EXTENSION = ".meta";
 

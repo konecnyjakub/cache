@@ -5,7 +5,7 @@ namespace Konecnyjakub\Cache\Simple;
 
 use DateInterval;
 use DateTime;
-use Konecnyjakub\Cache\Common\IItemValueSerializer;
+use Konecnyjakub\Cache\Common\ItemValueSerializer;
 use Konecnyjakub\Cache\Common\PhpSerializer;
 use Memcached;
 use Psr\EventDispatcher\EventDispatcherInterface;
@@ -19,12 +19,12 @@ final class MemcachedCache extends BaseCache
 {
     /**
      * @param int|null $defaultTtl Default life time in seconds for items if not provided for a specific item
-     * @param IItemValueSerializer $serializer Used when saving into/reading from cache files
+     * @param ItemValueSerializer $serializer Used when saving into/reading from cache files
      */
     public function __construct(
         private readonly Memcached $client,
         ?int $defaultTtl = null,
-        private readonly IItemValueSerializer $serializer = new PhpSerializer(),
+        private readonly ItemValueSerializer $serializer = new PhpSerializer(),
         ?EventDispatcherInterface $eventDispatcher = null
     ) {
         parent::__construct("", $defaultTtl, $eventDispatcher);

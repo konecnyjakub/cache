@@ -5,7 +5,7 @@ namespace Konecnyjakub\Cache\Simple;
 
 use DateInterval;
 use DateTime;
-use Konecnyjakub\Cache\Common\IItemValueSerializer;
+use Konecnyjakub\Cache\Common\ItemValueSerializer;
 use Konecnyjakub\Cache\Common\PhpSerializer;
 use Psr\EventDispatcher\EventDispatcherInterface;
 use Redis;
@@ -20,13 +20,13 @@ final class RedisCache extends BaseCache
     /**
      * @param string $namespace Optional namespace for this instance. Is added as prefix to keys
      * @param int|null $defaultTtl Default life time in seconds for items if not provided for a specific item
-     * @param IItemValueSerializer $serializer Used when saving into/reading from cache files
+     * @param ItemValueSerializer $serializer Used when saving into/reading from cache files
      */
     public function __construct(
         private readonly Redis $client,
         string $namespace = "",
         ?int $defaultTtl = null,
-        private readonly IItemValueSerializer $serializer = new PhpSerializer(),
+        private readonly ItemValueSerializer $serializer = new PhpSerializer(),
         ?EventDispatcherInterface $eventDispatcher = null
     ) {
         parent::__construct($namespace, $defaultTtl, $eventDispatcher);

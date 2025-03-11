@@ -8,7 +8,7 @@ use Psr\Cache\CacheItemPoolInterface;
 /**
  * Cache pool that supports tags
  */
-interface ITaggableCachePool extends CacheItemPoolInterface
+interface TaggableCachePool extends CacheItemPoolInterface
 {
     /**
      * Remove items from pool that have at least one of the listed tags

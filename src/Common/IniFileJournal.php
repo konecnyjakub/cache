@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace Konecnyjakub\Cache\Common;
 
-final readonly class IniFileJournal implements IJournal
+final readonly class IniFileJournal implements Journal
 {
     private const string KEY_EXPIRES_AT = "expiresAt";
     private const string KEY_TAGS = "tags";

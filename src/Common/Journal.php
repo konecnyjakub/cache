@@ -6,7 +6,7 @@ namespace Konecnyjakub\Cache\Common;
 /**
  * Handles meta data for cache items
  */
-interface IJournal
+interface Journal
 {
     /**
      * Get metadata for a cache item

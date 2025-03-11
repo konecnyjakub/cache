@@ -10,7 +10,7 @@ use Psr\EventDispatcher\EventDispatcherInterface;
  *
  * Stores values during the current request
  */
-final class MemoryCachePool extends BaseCachePool implements ITaggableCachePool
+final class MemoryCachePool extends BaseCachePool implements TaggableCachePool
 {
     /** @var array<string, CacheItem> */
     private array $items = [];

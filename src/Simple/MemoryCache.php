@@ -11,7 +11,7 @@ use Psr\EventDispatcher\EventDispatcherInterface;
  *
  * Stores values during the current request
  */
-final class MemoryCache extends BaseCache implements ITaggableCache
+final class MemoryCache extends BaseCache implements TaggableCache
 {
     /** @var array<string, CacheItem> */
     private array $items = [];

@@ -5,8 +5,8 @@ namespace Konecnyjakub\Cache\Simple;
 
 use DirectoryIterator;
 use Konecnyjakub\Cache\Common\CacheItemMetadata;
-use Konecnyjakub\Cache\Common\IItemValueSerializer;
-use Konecnyjakub\Cache\Common\IJournal;
+use Konecnyjakub\Cache\Common\ItemValueSerializer;
+use Konecnyjakub\Cache\Common\Journal;
 use Konecnyjakub\Cache\Common\IniFileJournal;
 use Konecnyjakub\Cache\Common\PhpSerializer;
 use Psr\EventDispatcher\EventDispatcherInterface;
@@ -17,27 +17,27 @@ use SplFileInfo;
  *
  * Stores values in a specified directory in the file system
  */
-final class FileCache extends BaseCache implements ITaggableCache
+final class FileCache extends BaseCache implements TaggableCache
 {
     private const string CACHE_FILE_EXTENSION = ".cache";
 
     private readonly string $directory;
 
-    private readonly IJournal $journal;
+    private readonly Journal $journal;
 
     /**
      * @param string $directory Base directory for cache
      * @param string $namespace Optional namespace for this instance. Creates a sub-directory in base directory
      * @param int|null $defaultTtl Default life time in seconds for items if not provided for a specific item
-     * @param IItemValueSerializer $serializer Used when saving into/reading from cache files
+     * @param ItemValueSerializer $serializer Used when saving into/reading from cache files
      */
     public function __construct(
         string $directory,
         string $namespace = "",
         ?int $defaultTtl = null,
-        private readonly IItemValueSerializer $serializer = new PhpSerializer(),
+        private readonly ItemValueSerializer $serializer = new PhpSerializer(),
         ?EventDispatcherInterface $eventDispatcher = null,
-        ?IJournal $journal = null
+        ?Journal $journal = null
     ) {
         parent::__construct($namespace, $defaultTtl, $eventDispatcher);
         if (!is_dir($directory) || !is_writable($directory)) {
