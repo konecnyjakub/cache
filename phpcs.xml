@@ -18,7 +18,6 @@
   <rule ref="Generic.CodeAnalysis.UselessOverridingMethod"/>
   <rule ref="Generic.Files.InlineHTML"/>
   <rule ref="Generic.Formatting.SpaceAfterCast"/>
-  <rule ref="Generic.Functions.CallTimePassByReference"/>
   <rule ref="Generic.Metrics"/>
   <rule ref="Generic.NamingConventions.ConstructorName"/>
   <rule ref="Generic.PHP">
@@ -29,6 +28,7 @@
   <rule ref="Generic.WhiteSpace.LanguageConstructSpacing"/>
   <rule ref="Squiz.Classes">
     <exclude name="Squiz.Classes.ClassDeclaration"/>
+    <exclude name="Squiz.Classes.DuplicateProperty"/>
   </rule>
   <rule ref="Squiz.PHP.CommentedOutCode"/>
   <rule ref="Squiz.PHP.DiscouragedFunctions"/>

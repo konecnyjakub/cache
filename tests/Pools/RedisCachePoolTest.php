@@ -23,7 +23,10 @@ final class RedisCachePoolTest extends TestCase
         if (!extension_loaded("redis")) {
             return;
         }
-        $host = is_string(getenv("REDIS_HOST")) ? getenv("REDIS_HOST") : "localhost";
+        $host = getenv("REDIS_HOST");
+        if (!is_string($host)) {
+            $host = "localhost";
+        }
         $this->client = new Redis();
         $this->client->connect($host);
     }

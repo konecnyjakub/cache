@@ -25,7 +25,10 @@ final class MemcachedCacheTest extends TestCase
             return;
         }
         $this->client = new Memcached();
-        $host = is_string(getenv("MEMCACHED_HOST")) ? getenv("MEMCACHED_HOST") : "localhost";
+        $host = getenv("MEMCACHED_HOST");
+        if (!is_string($host)) {
+            $host = "localhost";
+        }
         $this->client->addServer($host, 11211);
     }
 

@@ -3,9 +3,9 @@ declare(strict_types=1);
 
 namespace Konecnyjakub\Cache;
 
-use Konecnyjakub\EventDispatcher\IEventSubscriber;
+use Konecnyjakub\EventDispatcher\EventSubscriber;
 
-final class TestEventsLogger implements IEventSubscriber
+final class TestEventsLogger implements EventSubscriber
 {
     /** @var object[] */
     public array $events = [];
