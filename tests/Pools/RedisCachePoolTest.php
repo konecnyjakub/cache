@@ -13,6 +13,7 @@ use MyTester\TestCase;
 use Redis;
 
 #[TestSuite("RedisCachePool")]
+#[RequiresPhpExtension("redis")]
 final class RedisCachePoolTest extends TestCase
 {
     private Redis $client;
@@ -37,7 +38,6 @@ final class RedisCachePoolTest extends TestCase
         $this->client->flushDB();
     }
 
-    #[RequiresPhpExtension("redis")]
     public function testSingleKeyProcess(): void
     {
         $key = "abc";
@@ -77,7 +77,6 @@ final class RedisCachePoolTest extends TestCase
         $this->assertFalse($item->isHit());
     }
 
-    #[RequiresPhpExtension("redis")]
     public function testMultiKeysProcess(): void
     {
         $key1 = "one";
@@ -162,7 +161,6 @@ final class RedisCachePoolTest extends TestCase
         $this->assertFalse($items[$key2]->isHit());
     }
 
-    #[RequiresPhpExtension("redis")]
     public function testDefaultTtl(): void
     {
         $key = "ttl";
@@ -179,7 +177,6 @@ final class RedisCachePoolTest extends TestCase
         $this->assertTrue($pool->hasItem($key));
     }
 
-    #[RequiresPhpExtension("redis")]
     public function testNamespace(): void
     {
         $key1 = "one";
@@ -208,7 +205,6 @@ final class RedisCachePoolTest extends TestCase
         $this->assertFalse($pool1->hasItem($key1));
     }
 
-    #[RequiresPhpExtension("redis")]
     public function testSerializer(): void
     {
         $pool = new RedisCachePool($this->client);
@@ -223,7 +219,6 @@ final class RedisCachePoolTest extends TestCase
         $this->assertType("int", $item->get());
     }
 
-    #[RequiresPhpExtension("redis")]
     public function testEvents(): void
     {
         $eventsLogger = new TestEventsLogger();
@@ -261,7 +256,6 @@ final class RedisCachePoolTest extends TestCase
         $this->assertType(Events\CacheClear::class, $event);
     }
 
-    #[RequiresPhpExtension("redis")]
     public function testExceptions(): void
     {
         $pool = new RedisCachePool($this->client);

@@ -14,6 +14,7 @@ use MyTester\Attributes\TestSuite;
 use MyTester\TestCase;
 
 #[TestSuite("MemcachedCache")]
+#[RequiresPhpExtension("memcached")]
 final class MemcachedCacheTest extends TestCase
 {
     private Memcached $client;
@@ -38,7 +39,6 @@ final class MemcachedCacheTest extends TestCase
         $this->client->flush();
     }
 
-    #[RequiresPhpExtension("memcached")]
     public function testSingleKeyProcess(): void
     {
         $key = "abc";
@@ -62,7 +62,6 @@ final class MemcachedCacheTest extends TestCase
         $this->assertSame($default, $cache->get($key, $default));
     }
 
-    #[RequiresPhpExtension("memcached")]
     public function testMultiKeysProcess(): void
     {
         $key1 = "one";
@@ -113,7 +112,6 @@ final class MemcachedCacheTest extends TestCase
         );
     }
 
-    #[RequiresPhpExtension("memcached")]
     public function testDefaultTtl(): void
     {
         $key = "ttl";
@@ -127,7 +125,6 @@ final class MemcachedCacheTest extends TestCase
         $this->assertTrue($cache->has($key));
     }
 
-    #[RequiresPhpExtension("memcached")]
     public function testSerializer(): void
     {
         $cache = new MemcachedCache($this->client);
@@ -139,7 +136,6 @@ final class MemcachedCacheTest extends TestCase
         $this->assertType("int", $cache->get($key));
     }
 
-    #[RequiresPhpExtension("memcached")]
     public function testEvents(): void
     {
         $eventsLogger = new TestEventsLogger();
@@ -178,7 +174,6 @@ final class MemcachedCacheTest extends TestCase
         $this->assertType(Events\CacheClear::class, $event);
     }
 
-    #[RequiresPhpExtension("memcached")]
     public function testExceptions(): void
     {
         $cache = new MemcachedCache($this->client);

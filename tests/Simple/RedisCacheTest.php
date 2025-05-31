@@ -14,6 +14,7 @@ use MyTester\TestCase;
 use Redis;
 
 #[TestSuite("RedisCache")]
+#[RequiresPhpExtension("redis")]
 final class RedisCacheTest extends TestCase
 {
     private Redis $client;
@@ -38,7 +39,6 @@ final class RedisCacheTest extends TestCase
         $this->client->flushDB();
     }
 
-    #[RequiresPhpExtension("redis")]
     public function testSingleKeyProcess(): void
     {
         $key = "abc";
@@ -62,7 +62,6 @@ final class RedisCacheTest extends TestCase
         $this->assertSame($default, $cache->get($key, $default));
     }
 
-    #[RequiresPhpExtension("redis")]
     public function testMultiKeysProcess(): void
     {
         $key1 = "one";
@@ -113,7 +112,6 @@ final class RedisCacheTest extends TestCase
         );
     }
 
-    #[RequiresPhpExtension("redis")]
     public function testDefaultTtl(): void
     {
         $key = "ttl";
@@ -127,7 +125,6 @@ final class RedisCacheTest extends TestCase
         $this->assertTrue($cache->has($key));
     }
 
-    #[RequiresPhpExtension("redis")]
     public function testNamespace(): void
     {
         $key1 = "one";
@@ -152,7 +149,6 @@ final class RedisCacheTest extends TestCase
         $this->assertFalse($cache1->has($key1));
     }
 
-    #[RequiresPhpExtension("redis")]
     public function testSerializer(): void
     {
         $cache = new RedisCache($this->client);
@@ -164,7 +160,6 @@ final class RedisCacheTest extends TestCase
         $this->assertType("int", $cache->get($key));
     }
 
-    #[RequiresPhpExtension("redis")]
     public function testEvents(): void
     {
         $eventsLogger = new TestEventsLogger();
@@ -203,7 +198,6 @@ final class RedisCacheTest extends TestCase
         $this->assertType(Events\CacheClear::class, $event);
     }
 
-    #[RequiresPhpExtension("redis")]
     public function testExceptions(): void
     {
         $cache = new RedisCache($this->client);
