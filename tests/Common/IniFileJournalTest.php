@@ -3,18 +3,22 @@ declare(strict_types=1);
 
 namespace Konecnyjakub\Cache\Common;
 
+use MyTester\Attributes\AfterTestSuite;
+use MyTester\Attributes\BeforeTestSuite;
 use MyTester\Attributes\TestSuite;
 use MyTester\TestCase;
 
 #[TestSuite("IniFileJournal")]
 final class IniFileJournalTest extends TestCase
 {
-    public function startUp(): void
+    #[BeforeTestSuite]
+    public function createCacheDir(): void
     {
         mkdir(__DIR__ . DIRECTORY_SEPARATOR . "fileCache");
     }
 
-    public function shutDown(): void
+    #[AfterTestSuite]
+    public function removeCacheDir(): void
     {
         (new IniFileJournal(__DIR__ . DIRECTORY_SEPARATOR . "fileCache"))->clear();
         rmdir(__DIR__ . DIRECTORY_SEPARATOR . "fileCache");

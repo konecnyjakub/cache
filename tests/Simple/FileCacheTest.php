@@ -8,13 +8,15 @@ use Konecnyjakub\Cache\Events;
 use Konecnyjakub\Cache\TestEventsLogger;
 use Konecnyjakub\EventDispatcher\AutoListenerProvider;
 use Konecnyjakub\EventDispatcher\EventDispatcher;
+use MyTester\Attributes\AfterTest;
 use MyTester\Attributes\TestSuite;
 use MyTester\TestCase;
 
 #[TestSuite("FileCache")]
 final class FileCacheTest extends TestCase
 {
-    public function tearDown(): void
+    #[AfterTest]
+    public function clearCache(): void
     {
         (new FileCache(__DIR__, "fileCache"))->clear();
         rmdir(__DIR__ . DIRECTORY_SEPARATOR . "fileCache");

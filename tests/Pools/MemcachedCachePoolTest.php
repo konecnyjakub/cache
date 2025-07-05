@@ -8,6 +8,8 @@ use Konecnyjakub\Cache\TestEventsLogger;
 use Konecnyjakub\EventDispatcher\AutoListenerProvider;
 use Konecnyjakub\EventDispatcher\EventDispatcher;
 use Memcached;
+use MyTester\Attributes\AfterTest;
+use MyTester\Attributes\BeforeTestSuite;
 use MyTester\Attributes\RequiresPhpExtension;
 use MyTester\Attributes\TestSuite;
 use MyTester\TestCase;
@@ -18,9 +20,9 @@ final class MemcachedCachePoolTest extends TestCase
 {
     private Memcached $client;
 
-    public function startUp(): void
+    #[BeforeTestSuite]
+    public function prepareCache(): void
     {
-        parent::startUp();
         if (!extension_loaded("memcached")) {
             return;
         }
@@ -32,9 +34,9 @@ final class MemcachedCachePoolTest extends TestCase
         $this->client->addServer($host, 11211);
     }
 
-    public function tearDown(): void
+    #[AfterTest]
+    public function clearCache(): void
     {
-        parent::tearDown();
         $this->client->flush();
     }
 

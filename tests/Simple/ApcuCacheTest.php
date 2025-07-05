@@ -8,6 +8,7 @@ use Konecnyjakub\Cache\Events;
 use Konecnyjakub\Cache\TestEventsLogger;
 use Konecnyjakub\EventDispatcher\AutoListenerProvider;
 use Konecnyjakub\EventDispatcher\EventDispatcher;
+use MyTester\Attributes\AfterTest;
 use MyTester\Attributes\RequiresPhpExtension;
 use MyTester\Attributes\TestSuite;
 use MyTester\TestCase;
@@ -15,9 +16,9 @@ use MyTester\TestCase;
 #[TestSuite("ApcuCache")]
 final class ApcuCacheTest extends TestCase
 {
-    public function tearDown(): void
+    #[AfterTest]
+    public function clearCache(): void
     {
-        parent::tearDown();
         (new ApcuCache())->clear();
     }
 
