@@ -13,6 +13,7 @@ use MyTester\Attributes\TestSuite;
 use MyTester\TestCase;
 
 #[TestSuite("ApcuCachePool")]
+#[RequiresPhpExtension("apcu")]
 final class ApcuCachePoolTest extends TestCase
 {
     #[AfterTest]
@@ -21,7 +22,6 @@ final class ApcuCachePoolTest extends TestCase
         (new ApcuCachePool())->clear();
     }
 
-    #[RequiresPhpExtension("apcu")]
     public function testSingleKeyProcess(): void
     {
         $key = "abc";
@@ -61,7 +61,6 @@ final class ApcuCachePoolTest extends TestCase
         $this->assertFalse($item->isHit());
     }
 
-    #[RequiresPhpExtension("apcu")]
     public function testMultiKeysProcess(): void
     {
         $key1 = "one";
@@ -146,7 +145,6 @@ final class ApcuCachePoolTest extends TestCase
         $this->assertFalse($items[$key2]->isHit());
     }
 
-    #[RequiresPhpExtension("apcu")]
     public function testDefaultTtl(): void
     {
         $key = "ttl";
@@ -163,7 +161,6 @@ final class ApcuCachePoolTest extends TestCase
         $this->assertTrue($pool->hasItem($key));
     }
 
-    #[RequiresPhpExtension("apcu")]
     public function testNamespace(): void
     {
         $key1 = "one";
@@ -192,7 +189,6 @@ final class ApcuCachePoolTest extends TestCase
         $this->assertFalse($pool1->hasItem($key1));
     }
 
-    #[RequiresPhpExtension("apcu")]
     public function testSerializer(): void
     {
         $pool = new ApcuCachePool();
@@ -207,7 +203,6 @@ final class ApcuCachePoolTest extends TestCase
         $this->assertType("int", $item->get());
     }
 
-    #[RequiresPhpExtension("apcu")]
     public function testEvents(): void
     {
         $eventsLogger = new TestEventsLogger();
@@ -245,7 +240,6 @@ final class ApcuCachePoolTest extends TestCase
         $this->assertType(Events\CacheClear::class, $event);
     }
 
-    #[RequiresPhpExtension("apcu")]
     public function testExceptions(): void
     {
         $pool = new ApcuCachePool();
