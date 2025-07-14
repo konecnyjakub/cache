@@ -20,6 +20,8 @@ stages:
     variables:
         MEMCACHED_HOST: memcached
         REDIS_HOST: redis
+    rules:
+        - if: $CI_COMMIT_BRANCH
 
 test:php8.3:
     <<: *test_job
