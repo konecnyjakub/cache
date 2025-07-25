@@ -45,13 +45,13 @@ This package has more engines for caching which are more useful than MemoryCache
 
 Engines may support one or more advanced features. All advanced features are described in this section and sections about specific engines say which features are support and how are they used with the engine.
 
-One advance feature is default lifetime of items, it is used when ttl is not specified for an item. Engines provided in this package generally support, but a few (where it does not make sense) do not.
+One advance feature is default lifetime of items, it is used when ttl is not specified for an item. Engines provided in this package generally support this, but a few (where it does not make sense) do not.
 
 Another is namespace. Normally, different instances of an engine have access to same values but if you set a namespace for the instances, same keys can have different values in different instances. Do note that not all engines can (fully) use this (and that some may use it automatically).
 
 There is also journal which is used to store various metadata (e. g. expiration and tags) for an item if it is not supported natively by the engine. At the moment, only file based caches support this feature.
 
-Some engines support tags. Tags for an item can be set saving the item into cache and then can be used to delete multiple items from cache at the same time. Tags can be arbitrary strings. The engines supporting this implement interface Konecnyjakub\Cache\Simple\ITaggableCache (for PSR-16 caches) or Konecnyjakub\Cache\Pools\ITaggableCachePool (for PSR-6 cache pools). When invalidating tags with method invalidateTags, all items with at least one of the listed tags, will be deleted.
+Some engines support tags. Tags for an item can be set when saving the item into cache and then can be used to delete multiple items from cache at the same time. Tags can be arbitrary strings. The engines supporting this implement interface Konecnyjakub\Cache\Simple\TaggableCache (for PSR-16 caches) or Konecnyjakub\Cache\Pools\TaggableCachePool (for PSR-6 cache pools). When invalidating tags with method invalidateTags, all items with at least one of the listed tags, will be deleted.
 
 #### Memory
 
@@ -135,7 +135,7 @@ $cache2->has("two"); // true
 
 Files for expired items are not automatically deleted, it has to be done manually at the moment.
 
-This cache uses journal to handle items' metadata (e. g. expiration, tags). The default implementation store metadata in human readable file(s) but you can use your own implementation (e. g. sqlite database). You only have to create a new class implementing the Konecnyjakub\Cache\Common\IJournal and pass its instance to FileCache's constructor (as parameter journal). Tags can be used to delete multiple items from the cache. Example:
+This cache uses journal to handle items' metadata (e. g. expiration, tags). The default implementation stores metadata in human readable file(s) but you can use your own implementation (e. g. sqlite database). You only have to create a new class implementing the Konecnyjakub\Cache\Common\IJournal and pass its instance to FileCache's constructor (as parameter journal). Tags can be used to delete multiple items from the cache. Example:
 
 ```php
 <?php
@@ -188,7 +188,7 @@ Warning: if you use both an instance of ApcuCache without namespace and an insta
 
 #### Memcached
 
-MemcachedCache is an advanced cache engine, it stores values on a memcached server. It requires PHP extension memcached an a memcached server. It supports setting default lifetime for items.
+MemcachedCache is an advanced cache engine, it stores values on a memcached server. It requires PHP extension memcached and a memcached server. It supports setting default lifetime for items.
 
 ```php
 <?php
@@ -208,7 +208,7 @@ Be aware that different instances have access to same values. While namespaces w
 
 #### Redis
 
-RedisCache is an advanced cache engine, it uses a redis server to store values. It requires PHP extension redis an a redis server. You should use it if possible. It supports setting default lifetime for items.
+RedisCache is an advanced cache engine, it uses a redis server to store values. It requires PHP extension redis and a redis server. You should use it if possible. It supports setting default lifetime for items.
 
 ```php
 <?php
@@ -246,7 +246,7 @@ $cache1->has("two"); // false
 $cache2->has("two"); // true
 ```
 
-Warning: if you use both an instance of RedisCache without namespace and an instance with namespace, calling the clear method on instance without namespace clears everything in the apcu cache, even values saved from instances with namespace. For this reason we recommend either using only one instance (without namespace) or multiple instances but with different namespace for each of them.
+Warning: if you use both an instance of RedisCache without namespace and an instance with namespace, calling the clear method on instance without namespace clears everything in the redis cache, even values saved from instances with namespace. For this reason we recommend either using only one instance (without namespace) or multiple instances but with different namespace for each of them.
 
 #### Chain
 
