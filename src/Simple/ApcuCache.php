@@ -53,12 +53,12 @@ final class ApcuCache extends BaseCache
 
     protected function doClear(): bool
     {
-        if ($this->namespace === "") {
-            return apcu_clear_cache();
-        }
         $result = true;
         /** @var array{key: string, value: mixed} $counter */
-        foreach (new APCUIterator("/^$this->namespace:(.+)/") as $counter) {
+        foreach (new APCUIterator($this->namespace !== "" ? "/^$this->namespace:(.+)/" : "/^.+/") as $counter) {
+            if ($this->namespace === "" && str_contains($counter["key"], ":")) {
+                continue;
+            }
             $result = $result && $this->doDelete(str_replace($this->getKey(""), "", $counter["key"]));
         }
         return $result;

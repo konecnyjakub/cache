@@ -202,7 +202,7 @@ final class RedisCachePoolTest extends TestCase
         $this->assertFalse($pool1->hasItem($key2));
         $this->assertTrue($pool1->clear());
         $this->assertFalse($pool1->hasItem($key1));
-        $this->assertFalse($pool2->hasItem($key2)); // FIXME: should return true
+        $this->assertTrue($pool2->hasItem($key2));
         $this->assertTrue($pool1->save($item1));
         $this->assertTrue($pool2->save($item2));
         $this->assertTrue($pool2->clear());

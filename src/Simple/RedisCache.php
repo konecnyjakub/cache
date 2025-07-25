@@ -65,14 +65,13 @@ final class RedisCache extends BaseCache
 
     protected function doClear(): bool
     {
-        if ($this->namespace === "") {
-            return $this->client->flushDB();
-        }
-
         $result = true;
         /** @var string[] $keys */
         $keys = $this->client->keys($this->getKey("*"));
         foreach ($keys as $key) {
+            if ($this->namespace === "" && str_contains($key, ":")) {
+                continue;
+            }
             $result = $result && $this->doDelete(str_replace($this->namespace . ":", "", $key));
         }
         return $result;

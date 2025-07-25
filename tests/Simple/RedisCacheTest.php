@@ -146,7 +146,7 @@ final class RedisCacheTest extends TestCase
         $this->assertTrue($cache2->has($key2));
         $this->assertTrue($cache1->clear());
         $this->assertFalse($cache1->has($key1));
-        $this->assertFalse($cache2->has($key2)); // FIXME: should return true
+        $this->assertTrue($cache2->has($key2));
         $this->assertTrue($cache1->set($key1, "abc"));
         $this->assertTrue($cache2->set($key2, "def"));
         $this->assertTrue($cache2->clear());

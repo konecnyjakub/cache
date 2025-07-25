@@ -19,7 +19,7 @@ final class ApcuCachePoolTest extends TestCase
     #[AfterTest]
     public function clearCache(): void
     {
-        (new ApcuCachePool())->clear();
+        apcu_clear_cache();
     }
 
     public function testSingleKeyProcess(): void
@@ -184,7 +184,7 @@ final class ApcuCachePoolTest extends TestCase
         $this->assertFalse($pool1->hasItem($key2));
         $this->assertTrue($pool1->clear());
         $this->assertFalse($pool1->hasItem($key1));
-        $this->assertFalse($pool2->hasItem($key2)); // FIXME: should return true
+        $this->assertTrue($pool2->hasItem($key2));
         $this->assertTrue($pool1->save($item1));
         $this->assertTrue($pool2->save($item2));
         $this->assertTrue($pool2->clear());

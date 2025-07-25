@@ -184,7 +184,7 @@ $cache1->has("two"); // false
 $cache2->has("two"); // true
 ```
 
-Warning: if you use both an instance of ApcuCache without namespace and an instance with namespace, calling the clear method on instance without namespace clears everything in the apcu cache, even values saved from instances with namespace. For this reason we recommend either using only one instance (without namespace) or multiple instances but with different namespace for each of them.
+If you use both an instance of ApcuCache without namespace and an instance with namespace, calling the clear method on instance without namespace only clears items in the non-namespaced cache.
 
 #### Memcached
 
@@ -246,7 +246,7 @@ $cache1->has("two"); // false
 $cache2->has("two"); // true
 ```
 
-Warning: if you use both an instance of RedisCache without namespace and an instance with namespace, calling the clear method on instance without namespace clears everything in the redis cache, even values saved from instances with namespace. For this reason we recommend either using only one instance (without namespace) or multiple instances but with different namespace for each of them.
+If you use both an instance of RedisCache without namespace and an instance with namespace, calling the clear method on instance without namespace only clears items in the non-namespaced cache.
 
 #### Chain
 
