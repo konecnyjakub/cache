@@ -295,7 +295,3 @@ There are a few options that were considered but ultimately rejected. The list o
 #### Events
 
 Our engines (except ChainCache) can call your code when an event occurs - an item is successfully read from cache (cache hit), an item could not be read from cache or was expired (cache miss), an item was saved into cache, an item was deleted from cache and all items were deleted from cache. Just pass a [PSR-14 ](https://www.php-fig.org/psr/psr-14/) event dispatcher as parameter eventDispatcher into the engine's constructor. Classes for all possible events are in namespace Konecnyjakub\Cache\Events.
-
-### PSRs
-
-This package implements both PSR-16 and PSR-6.
