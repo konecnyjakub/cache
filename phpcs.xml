@@ -28,7 +28,6 @@
   <rule ref="Generic.WhiteSpace.LanguageConstructSpacing"/>
   <rule ref="Squiz.Classes">
     <exclude name="Squiz.Classes.ClassDeclaration"/>
-    <exclude name="Squiz.Classes.DuplicateProperty"/>
   </rule>
   <rule ref="Squiz.PHP.CommentedOutCode"/>
   <rule ref="Squiz.PHP.DiscouragedFunctions"/>
