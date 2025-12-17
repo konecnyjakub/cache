@@ -31,10 +31,14 @@ test:php8.4:
     <<: *test_job
     image: nexendrie/php:8.4
 
+test:php8.5:
+    <<: *test_job
+    image: nexendrie/php:8.5
+
 test:reports:
     extends:
         - .test_job
-    image: nexendrie/php:8.4
+    image: nexendrie/php:8.5
     variables:
         REPORTS: 1
     coverage: '/(\d+\%) covered/'
