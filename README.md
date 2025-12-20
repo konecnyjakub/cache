@@ -135,7 +135,7 @@ $cache2->has("two"); // true
 
 Files for expired items are not automatically deleted, it has to be done manually at the moment.
 
-This cache uses journal to handle items' metadata (e. g. expiration, tags). The default implementation stores metadata in human readable file(s) but you can use your own implementation (e. g. sqlite database). You only have to create a new class implementing the Konecnyjakub\Cache\Common\IJournal and pass its instance to FileCache's constructor (as parameter journal). Tags can be used to delete multiple items from the cache. Example:
+This cache uses journal to handle items' metadata (e. g. expiration, tags). The default implementation stores metadata in human readable file(s) but you can use your own implementation (e. g. sqlite database). You only have to create a new class implementing the Konecnyjakub\Cache\Common\Journal and pass its instance to FileCache's constructor (as parameter journal). Tags can be used to delete multiple items from the cache. Example:
 
 ```php
 <?php
