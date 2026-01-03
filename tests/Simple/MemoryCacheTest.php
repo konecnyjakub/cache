@@ -7,10 +7,13 @@ use Konecnyjakub\Cache\Events;
 use Konecnyjakub\Cache\TestEventsLogger;
 use Konecnyjakub\EventDispatcher\AutoListenerProvider;
 use Konecnyjakub\EventDispatcher\EventDispatcher;
+use MyTester\Attributes\Group;
 use MyTester\Attributes\TestSuite;
 use MyTester\TestCase;
 
 #[TestSuite("MemoryCache")]
+#[Group("simpleCaches")]
+#[Group("memoryCache")]
 final class MemoryCacheTest extends TestCase
 {
     public function testSingleKeyProcess(): void

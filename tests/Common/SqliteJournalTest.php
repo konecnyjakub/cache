@@ -5,6 +5,7 @@ namespace Konecnyjakub\Cache\Common;
 
 use MyTester\Attributes\AfterTestSuite;
 use MyTester\Attributes\BeforeTestSuite;
+use MyTester\Attributes\Group;
 use MyTester\Attributes\RequiresPhpExtension;
 use MyTester\Attributes\TestSuite;
 use MyTester\TestCase;
@@ -12,6 +13,7 @@ use PDO;
 
 #[TestSuite("SqliteJournal")]
 #[RequiresPhpExtension("pdo")]
+#[Group("journals")]
 final class SqliteJournalTest extends TestCase
 {
     public function testProcess(): void

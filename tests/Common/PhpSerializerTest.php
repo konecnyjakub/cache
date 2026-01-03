@@ -3,10 +3,12 @@ declare(strict_types=1);
 
 namespace Konecnyjakub\Cache\Common;
 
+use MyTester\Attributes\Group;
 use MyTester\Attributes\TestSuite;
 use MyTester\TestCase;
 
 #[TestSuite("PhpSerializer")]
+#[Group("serializers")]
 final class PhpSerializerTest extends TestCase
 {
     public function testProcess(): void

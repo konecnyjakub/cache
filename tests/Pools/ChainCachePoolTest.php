@@ -3,10 +3,13 @@ declare(strict_types=1);
 
 namespace Konecnyjakub\Cache\Pools;
 
+use MyTester\Attributes\Group;
 use MyTester\Attributes\TestSuite;
 use MyTester\TestCase;
 
 #[TestSuite("ChainCachePool")]
+#[Group("cachePools")]
+#[Group("chainCache")]
 final class ChainCachePoolTest extends TestCase
 {
     public function testSingleKeyProcess(): void

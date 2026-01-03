@@ -8,10 +8,13 @@ use Konecnyjakub\Cache\TestEventsLogger;
 use Konecnyjakub\EventDispatcher\AutoListenerProvider;
 use Konecnyjakub\EventDispatcher\EventDispatcher;
 use MyTester\Attributes\AfterTest;
+use MyTester\Attributes\Group;
 use MyTester\Attributes\TestSuite;
 use MyTester\TestCase;
 
 #[TestSuite("FileCachePool")]
+#[Group("cachePools")]
+#[Group("fileCache")]
 final class FileCachePoolTest extends TestCase
 {
     #[AfterTest]

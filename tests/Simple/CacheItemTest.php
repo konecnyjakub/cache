@@ -4,10 +4,13 @@ declare(strict_types=1);
 namespace Konecnyjakub\Cache\Simple;
 
 use DateInterval;
+use MyTester\Attributes\Group;
 use MyTester\Attributes\TestSuite;
 use MyTester\TestCase;
 
 #[TestSuite("CacheItem")]
+#[Group("simpleCaches")]
+#[Group("cacheItem")]
 final class CacheItemTest extends TestCase
 {
     public function testIsExpired(): void

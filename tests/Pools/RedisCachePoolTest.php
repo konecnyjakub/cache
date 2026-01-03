@@ -9,6 +9,7 @@ use Konecnyjakub\EventDispatcher\AutoListenerProvider;
 use Konecnyjakub\EventDispatcher\EventDispatcher;
 use MyTester\Attributes\AfterTest;
 use MyTester\Attributes\BeforeTestSuite;
+use MyTester\Attributes\Group;
 use MyTester\Attributes\RequiresPhpExtension;
 use MyTester\Attributes\TestSuite;
 use MyTester\TestCase;
@@ -16,6 +17,8 @@ use Redis;
 
 #[TestSuite("RedisCachePool")]
 #[RequiresPhpExtension("redis")]
+#[Group("cachePools")]
+#[Group("redis")]
 final class RedisCachePoolTest extends TestCase
 {
     private Redis $client;

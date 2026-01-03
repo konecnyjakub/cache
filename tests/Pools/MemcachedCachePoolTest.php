@@ -10,12 +10,15 @@ use Konecnyjakub\EventDispatcher\EventDispatcher;
 use Memcached;
 use MyTester\Attributes\AfterTest;
 use MyTester\Attributes\BeforeTestSuite;
+use MyTester\Attributes\Group;
 use MyTester\Attributes\RequiresPhpExtension;
 use MyTester\Attributes\TestSuite;
 use MyTester\TestCase;
 
 #[TestSuite("MemcachedCachePool")]
 #[RequiresPhpExtension("memcached")]
+#[Group("cachePools")]
+#[Group("memcached")]
 final class MemcachedCachePoolTest extends TestCase
 {
     private Memcached $client;

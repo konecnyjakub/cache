@@ -5,10 +5,12 @@ namespace Konecnyjakub\Cache\Common;
 
 use MyTester\Attributes\AfterTestSuite;
 use MyTester\Attributes\BeforeTestSuite;
+use MyTester\Attributes\Group;
 use MyTester\Attributes\TestSuite;
 use MyTester\TestCase;
 
 #[TestSuite("SimpleFileJournal")]
+#[Group("journals")]
 final class SimpleFileJournalTest extends TestCase
 {
     #[BeforeTestSuite]

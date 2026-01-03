@@ -9,10 +9,13 @@ use Konecnyjakub\Cache\TestEventsLogger;
 use Konecnyjakub\EventDispatcher\AutoListenerProvider;
 use Konecnyjakub\EventDispatcher\EventDispatcher;
 use MyTester\Attributes\AfterTest;
+use MyTester\Attributes\Group;
 use MyTester\Attributes\TestSuite;
 use MyTester\TestCase;
 
 #[TestSuite("FileCache")]
+#[Group("simpleCaches")]
+#[Group("fileCache")]
 final class FileCacheTest extends TestCase
 {
     #[AfterTest]

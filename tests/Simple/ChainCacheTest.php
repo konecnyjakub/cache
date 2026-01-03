@@ -3,10 +3,13 @@ declare(strict_types=1);
 
 namespace Konecnyjakub\Cache\Simple;
 
+use MyTester\Attributes\Group;
 use MyTester\Attributes\TestSuite;
 use MyTester\TestCase;
 
 #[TestSuite("ChainCache")]
+#[Group("simpleCaches")]
+#[Group("chainCache")]
 final class ChainCacheTest extends TestCase
 {
     public function testSingleKeyProcess(): void

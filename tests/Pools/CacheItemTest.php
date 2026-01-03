@@ -3,10 +3,13 @@ declare(strict_types=1);
 
 namespace Konecnyjakub\Cache\Pools;
 
+use MyTester\Attributes\Group;
 use MyTester\Attributes\TestSuite;
 use MyTester\TestCase;
 
 #[TestSuite("CacheItem")]
+#[Group("cachePools")]
+#[Group("cacheItem")]
 final class CacheItemTest extends TestCase
 {
     public function testGetKey(): void

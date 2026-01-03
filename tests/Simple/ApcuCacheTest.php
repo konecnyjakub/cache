@@ -9,12 +9,15 @@ use Konecnyjakub\Cache\TestEventsLogger;
 use Konecnyjakub\EventDispatcher\AutoListenerProvider;
 use Konecnyjakub\EventDispatcher\EventDispatcher;
 use MyTester\Attributes\AfterTest;
+use MyTester\Attributes\Group;
 use MyTester\Attributes\RequiresPhpExtension;
 use MyTester\Attributes\TestSuite;
 use MyTester\TestCase;
 
 #[TestSuite("ApcuCache")]
 #[RequiresPhpExtension("apcu")]
+#[Group("simpleCaches")]
+#[Group("apcu")]
 final class ApcuCacheTest extends TestCase
 {
     #[AfterTest]

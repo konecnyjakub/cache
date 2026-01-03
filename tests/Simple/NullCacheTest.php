@@ -7,10 +7,13 @@ use Konecnyjakub\Cache\Events;
 use Konecnyjakub\Cache\TestEventsLogger;
 use Konecnyjakub\EventDispatcher\AutoListenerProvider;
 use Konecnyjakub\EventDispatcher\EventDispatcher;
+use MyTester\Attributes\Group;
 use MyTester\Attributes\TestSuite;
 use MyTester\TestCase;
 
 #[TestSuite("NullCache")]
+#[Group("simpleCaches")]
+#[Group("nullCache")]
 final class NullCacheTest extends TestCase
 {
     public function testSingleKeyProcess(): void

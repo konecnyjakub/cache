@@ -8,12 +8,15 @@ use Konecnyjakub\Cache\TestEventsLogger;
 use Konecnyjakub\EventDispatcher\AutoListenerProvider;
 use Konecnyjakub\EventDispatcher\EventDispatcher;
 use MyTester\Attributes\AfterTest;
+use MyTester\Attributes\Group;
 use MyTester\Attributes\RequiresPhpExtension;
 use MyTester\Attributes\TestSuite;
 use MyTester\TestCase;
 
 #[TestSuite("ApcuCachePool")]
 #[RequiresPhpExtension("apcu")]
+#[Group("cachePools")]
+#[Group("apcu")]
 final class ApcuCachePoolTest extends TestCase
 {
     #[AfterTest]
