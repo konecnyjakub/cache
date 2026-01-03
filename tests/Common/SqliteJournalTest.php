@@ -3,8 +3,6 @@ declare(strict_types=1);
 
 namespace Konecnyjakub\Cache\Common;
 
-use MyTester\Attributes\AfterTestSuite;
-use MyTester\Attributes\BeforeTestSuite;
 use MyTester\Attributes\Group;
 use MyTester\Attributes\RequiresPhpExtension;
 use MyTester\Attributes\TestSuite;
