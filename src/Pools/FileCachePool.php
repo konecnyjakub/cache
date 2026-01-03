@@ -27,8 +27,8 @@ final class FileCachePool extends BaseCachePool implements TaggableCachePool
 
     /**
      * @param string $directory Base directory for cache
-     * @param string $namespace Optional namespace for this instance. Creates a sub-directory in base directory
-     * @param int $defaultTtl Default life time in seconds for items if not provided for a specific item
+     * @param string $namespace Optional namespace for this instance. Creates a subdirectory in base directory
+     * @param int $defaultTtl Default lifetime in seconds for items if not provided for a specific item
      * @param ItemValueSerializer $serializer Used when saving into/reading from cache files
      */
     public function __construct(

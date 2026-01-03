@@ -17,7 +17,7 @@ final class ApcuCache extends BaseCache
 {
     /**
      * @param string $namespace Optional namespace for this instance. Is added as prefix to keys
-     * @param int|null $defaultTtl Default life time in seconds for items if not provided for a specific item
+     * @param int|null $defaultTtl Default lifetime in seconds for items if not provided for a specific item
      */
     public function __construct(
         string $namespace = "",

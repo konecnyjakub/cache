@@ -4,7 +4,7 @@ declare(strict_types=1);
 namespace Konecnyjakub\Cache\Common;
 
 /**
- * Handles meta data for cache items
+ * Handles metadata for cache items
  */
 interface Journal
 {

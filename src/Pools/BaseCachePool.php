@@ -21,7 +21,7 @@ abstract class BaseCachePool implements CacheItemPoolInterface
 
     /**
      * @param string $namespace Optional namespace for one instance
-     * @param int|null $defaultTtl Default life time in seconds for items if not provided for a specific item
+     * @param int|null $defaultTtl Default lifetime in seconds for items if not provided for a specific item
      */
     public function __construct(
         protected readonly string $namespace = "",

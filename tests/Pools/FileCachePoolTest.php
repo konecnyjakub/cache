@@ -286,7 +286,7 @@ final class FileCachePoolTest extends TestCase
     public function testExceptions(): void
     {
         $this->assertThrowsException(function () {
-            new FileCachePool("/non-existings");
+            new FileCachePool("/non-existing");
         }, InvalidDirectoryException::class);
 
         $pool = new FileCachePool(__DIR__, "fileCache");

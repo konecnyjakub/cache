@@ -16,7 +16,7 @@ final class MemoryCachePool extends BaseCachePool implements TaggableCachePool
     private array $items = [];
 
     /**
-     * @param int|null $defaultTtl Default life time in seconds for items if not provided for a specific item
+     * @param int|null $defaultTtl Default lifetime in seconds for items if not provided for a specific item
      */
     public function __construct(
         ?int $defaultTtl = null,
