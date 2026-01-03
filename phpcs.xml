@@ -15,6 +15,9 @@
   <rule ref="Generic.CodeAnalysis.EmptyStatement">
     <type>warning</type>
   </rule>
+  <rule ref="Generic.CodeAnalysis.AssignmentInCondition.FoundInWhileCondition">
+    <severity>0</severity>
+  </rule>>
   <rule ref="Generic.CodeAnalysis.UselessOverridingMethod"/>
   <rule ref="Generic.Files.InlineHTML"/>
   <rule ref="Generic.Formatting.SpaceAfterCast"/>

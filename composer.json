@@ -36,6 +36,7 @@
     },
     "suggest": {
         "ext-apcu": "To use apcu as a cache engine",
+        "ext-pdo": "To use a sqlite database as journal",
         "ext-memcached": "To use memcached as a cache engine",
         "ext-redis": "To use redis as a cache engine",
         "psr/event-dispatcher": "To use events in cache engines"
@@ -59,7 +60,7 @@
     },
     "extra": {
         "branch-alias": {
-            "dev-master": "1.0.x-dev"
+            "dev-master": "1.1.x-dev"
         }
     }
 }
