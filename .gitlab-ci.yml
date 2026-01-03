@@ -15,7 +15,7 @@ stages:
     services:
         - name: memcached:1-alpine
           alias: memcached
-        - name: redis:7-alpine
+        - name: redis:8-alpine
           alias: redis
     variables:
         MEMCACHED_HOST: memcached

@@ -6,7 +6,7 @@ services:
         ports:
             -   "11211:11211"
     redis:
-        image: redis:7-alpine
+        image: redis:8-alpine
         restart: on-failure
         container_name: cache_services_redis
         ports:
