@@ -49,13 +49,13 @@ One advance feature is default lifetime of items, it is used when ttl is not spe
 
 Another is namespace. Normally, different instances of an engine have access to same values but if you set a namespace for the instances, same keys can have different values in different instances. Do note that not all engines can (fully) use this (and that some may use it automatically).
 
-There is also journal which is used to store various metadata (e. g. expiration and tags) for an item if it is not supported natively by the engine. At the moment, only file based caches support this feature.
+There is also journal which is used to store various metadata (e.g. expiration and tags) for an item if it is not supported natively by the engine. At the moment, only file based caches support this feature.
 
 Some engines support tags. Tags for an item can be set when saving the item into cache and then can be used to delete multiple items from cache at the same time. Tags can be arbitrary strings. The engines supporting this implement interface Konecnyjakub\Cache\Simple\TaggableCache (for PSR-16 caches) or Konecnyjakub\Cache\Pools\TaggableCachePool (for PSR-6 cache pools). When invalidating tags with method invalidateTags, all items with at least one of the listed tags, will be deleted.
 
 #### Memory
 
-It was already mentioned in quick start as it is the most simple engine that does something. It supports setting default lifetime of items, different instances are automatically separate (each one holds different values).
+It was already mentioned in quick start as it is the simplest engine that does something. It supports setting default lifetime of items, different instances are automatically separate (each one holds different values).
 
 ```php
 <?php
@@ -115,7 +115,7 @@ $cache->has("one"); // true
 $cache->get("one"); // abc
 ```
 
-By default, different instance save to the same directory (if same value is passed for parameter directory) but it is possible to use a sub-directory to separate their files (and in turn values).
+By default, different instance save to the same directory (if same value is passed for parameter directory) but it is possible to use a subdirectory to separate their files (and in turn values).
 
 ```php
 <?php
@@ -135,7 +135,7 @@ $cache2->has("two"); // true
 
 Files for expired items are not automatically deleted, it has to be done manually at the moment.
 
-This cache uses journal to handle items' metadata (e. g. expiration, tags). The default implementation stores metadata in human-readable file(s) but you can also use a sqlite database or create your own implementation. You only have to create a new class implementing the Konecnyjakub\Cache\Common\Journal and pass its instance to FileCache's constructor (as parameter journal). Tags can be used to delete multiple items from the cache. Example:
+This cache uses journal to handle items' metadata (e.g. expiration, tags). The default implementation stores metadata in human-readable file(s) but you can also use a sqlite database or create your own implementation. You only have to create a new class implementing the Konecnyjakub\Cache\Common\Journal and pass its instance to FileCache's constructor (as parameter journal). Tags can be used to delete multiple items from the cache. Example:
 
 ```php
 <?php
