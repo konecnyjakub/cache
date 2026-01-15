@@ -248,6 +248,63 @@ $cache2->has("two"); // true
 
 If you use both an instance of RedisCache without namespace and an instance with namespace, calling the clear method on instance without namespace only clears items in the non-namespaced cache.
 
+#### Sqlite
+
+SqliteCache is an advanced cache engine, it uses a sqlite database (either file-based or in-memory) to store values. It requires PHP extension pdo. It supports setting default lifetime for items.
+
+```php
+<?php
+declare(strict_types=1);
+
+use Konecnyjakub\Cache\Simple\SqliteCache;
+use PDO\Sqlite;
+
+$pdo = new Sqlite("sqlite::memory:");
+$cache = new SqliteCache($pdo, defaultTtl: 2);
+$cache->set("one", "abc"); // this item will expire after 2 seconds
+$cache->set("two", "def", 3); // this item will expire after 3 seconds
+```
+
+By default, different instances have access to same values unless you set a namespace for them.
+
+```php
+<?php
+declare(strict_types=1);
+
+use Konecnyjakub\Cache\Simple\SqliteCache;
+use PDO\Sqlite;
+
+$pdo = new Sqlite("sqlite::memory:");
+$cache1 = new SqliteCache($pdo, namespace: "pool1");
+$cache2 = new SqliteCache($pdo, namespace: "pool2");
+$cache1->set("one", "abc");
+$cache2->set("two", "def");
+$cache1->has("one"); // true
+$cache2->has("one"); // false
+$cache1->has("two"); // false
+$cache2->has("two"); // true
+```
+
+If you use both an instance of SqliteCache without namespace and an instance with namespace, calling the clear method on instance without namespace only clears items in the non-namespaced cache.
+
+This cache uses journal to handle items' metadata (e.g. expiration, tags). The default implementation stores metadata in a sqlite database (using the same PDO connection passed to the constructor). Tags can be used to delete multiple items from the cache. Example:
+
+```php
+<?php
+declare(strict_types=1);
+
+use Konecnyjakub\Cache\Simple\SqliteCache;
+use PDO\Sqlite;
+
+$pdo = new Sqlite("sqlite::memory:");
+$cache = new SqliteCache($pdo);
+$cache->set("one", "abc", ["tag1", "tag2", ]);
+$cache->set("two", "def", ["tag2", ]);
+$cache->invalidateTags(["tag1", ])
+$cache->has("one"); // true
+$cache->has("two"); // false
+```
+
 #### Chain
 
 ChainCache allows using multiple engines at the same time. Methods has/get/getMultiple try all engines in the order they were registered until one returns data. Methods set/setMultiple/delete/deleteMultiple/clear are run on all available engines.

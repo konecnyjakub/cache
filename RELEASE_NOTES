@@ -1,3 +1,3 @@
-A new version of Cache is out. It requires PHP 8.4 or later. It allows using a sqlite database as journal and toml as journal.
+A new version of Cache is out. It requires PHP 8.4 or later. It allows using a sqlite database as cache engine and journal and toml as journal.
 
 For complete list of changes since previous version, see CHANGELOG.md.

@@ -1,5 +1,5 @@
 Version 1.1.0-dev
-- added SqliteJournal
+- added sqlite cache and journal
 - dropped support for PHP 8.3
 - added TomlJournal
 
