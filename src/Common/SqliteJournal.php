@@ -3,8 +3,7 @@ declare(strict_types=1);
 
 namespace Konecnyjakub\Cache\Common;
 
-use InvalidArgumentException;
-use PDO;
+use Pdo\Sqlite;
 
 final class SqliteJournal implements Journal
 {
@@ -16,17 +15,8 @@ final class SqliteJournal implements Journal
     private string $columnTagKey = "key";
     private string $columnTag = "tag";
 
-    public function __construct(private readonly PDO $connection)
+    public function __construct(private readonly Sqlite $connection)
     {
-        /** @var string $pdoDriverName */
-        $pdoDriverName = $this->connection->getAttribute(PDO::ATTR_DRIVER_NAME);
-        if ($pdoDriverName !== "sqlite") {
-            throw new InvalidArgumentException(sprintf(
-                "%s requires connection to a sqlite database, %s given",
-                self::class,
-                $pdoDriverName
-            ));
-        }
         $this->connection->exec(
             "CREATE TABLE IF NOT EXISTS $this->tableTtl ($this->columnTtlKey TEXT NOT NULL, $this->columnTtl INT NULL)"
         );

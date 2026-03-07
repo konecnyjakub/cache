@@ -7,7 +7,7 @@ use MyTester\Attributes\Group;
 use MyTester\Attributes\RequiresPhpExtension;
 use MyTester\Attributes\TestSuite;
 use MyTester\TestCase;
-use PDO;
+use Pdo\Sqlite;
 
 #[TestSuite("SqliteJournal")]
 #[RequiresPhpExtension("pdo")]
@@ -16,7 +16,7 @@ final class SqliteJournalTest extends TestCase
 {
     public function testProcess(): void
     {
-        $pdo = new PDO("sqlite::memory:");
+        $pdo = new Sqlite("sqlite::memory:");
         $journal = new SqliteJournal($pdo);
         $key1 = "abc";
         $key2 = "def";
