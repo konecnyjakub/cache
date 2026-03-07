@@ -12,6 +12,7 @@ use Pdo\Sqlite;
 #[TestSuite("SqliteJournal")]
 #[RequiresPhpExtension("pdo")]
 #[Group("journals")]
+#[Group("sqlite")]
 final class SqliteJournalTest extends TestCase
 {
     public function testProcess(): void
