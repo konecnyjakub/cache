@@ -12,7 +12,10 @@
         "file",
         "filesystem",
         "memory",
-        "apcu"
+        "apcu",
+        "sqlite",
+        "toml",
+        "ini"
     ],
     "authors": [
         {
@@ -32,14 +35,16 @@
         "squizlabs/php_codesniffer": "^4.0",
         "phpstan/phpstan-strict-rules": "^2.0",
         "phpstan/phpstan-deprecation-rules": "^2.0",
-        "konecnyjakub/mytester": "^8.1"
+        "konecnyjakub/mytester": "^8.1",
+        "devium/toml": "^1.0"
     },
     "suggest": {
         "ext-apcu": "To use apcu as a cache engine",
         "ext-pdo": "To use a sqlite database as journal",
         "ext-memcached": "To use memcached as a cache engine",
         "ext-redis": "To use redis as a cache engine",
-        "psr/event-dispatcher": "To use events in cache engines"
+        "psr/event-dispatcher": "To use events in cache engines",
+        "devium/toml": "To use TomlJournal"
     },
     "provide": {
         "psr/simple-cache-implementation": "1.0 | 2.0 | 3.0",
