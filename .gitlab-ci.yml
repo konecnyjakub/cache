@@ -61,3 +61,5 @@ announce:gitlab:
         tag_name: $CI_COMMIT_TAG
         name: "Version $CI_COMMIT_TAG"
         description: "./RELEASE_NOTES"
+        milestones:
+            - "1.1"
