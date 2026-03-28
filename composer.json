@@ -44,7 +44,7 @@
         "ext-memcached": "To use memcached as a cache engine",
         "ext-redis": "To use redis as a cache engine",
         "psr/event-dispatcher": "To use events in cache engines",
-        "devium/toml": "To use TomlJournal"
+        "devium/toml": "To use TomlFileJournal"
     },
     "provide": {
         "psr/simple-cache-implementation": "1.0 | 2.0 | 3.0",
