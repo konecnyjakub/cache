@@ -52,12 +52,7 @@ final class ChainCache implements CacheInterface
 
     public function has(string $key): bool
     {
-        foreach ($this->engines as $engine) {
-            if ($engine->has($key)) {
-                return true;
-            }
-        }
-        return false;
+        return array_any($this->engines, static fn (CacheInterface $engine): bool => $engine->has($key));
     }
 
     public function clear(): bool

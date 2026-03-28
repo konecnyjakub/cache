@@ -48,12 +48,7 @@ final class ChainCachePool implements CacheItemPoolInterface
 
     public function hasItem(string $key): bool
     {
-        foreach ($this->engines as $engine) {
-            if ($engine->hasItem($key)) {
-                return true;
-            }
-        }
-        return false;
+        return array_any($this->engines, static fn (CacheItemPoolInterface $engine): bool => $engine->hasItem($key));
     }
 
     public function clear(): bool
