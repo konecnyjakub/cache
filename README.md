@@ -346,7 +346,7 @@ While all planned engines are present, there are more ways to cache things so is
 There are a few options that were considered but ultimately rejected. The list of those options (and reasons for rejecting them) follows.
 
 * Wincache - it is supported only on Windows (and probably only old versions) while this package is mainly tested (and expected to be used) on Linux based operating systems
-* database via PDO - this does not really make sense (one could just take the data from database) with the possible exception of sqlite
+* database via PDO - this does not really make sense (one could just take the data from database) except sqlite
 * xcache - only PHP 5.x is supported while this package requires much newer versions
 
 #### Events
