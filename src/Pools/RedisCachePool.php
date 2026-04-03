@@ -34,7 +34,7 @@ final class RedisCachePool extends BaseCachePool
     protected function doGet(string $key): CacheItem
     {
         return new CacheItem(
-            $this->getKey($key),
+            $key,
             $this->serializer->unserialize($this->client->get($this->getKey($key))), // @phpstan-ignore argument.type
             true
         );

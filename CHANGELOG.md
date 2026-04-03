@@ -1,3 +1,6 @@
+Version 1.1.0+dev
+- item keys in CacheItem::getKey() no longer contain namespace for apcu, redis and sqlite cache pools
+
 Version 1.1.0
 - added sqlite cache and journal
 - dropped support for PHP 8.3

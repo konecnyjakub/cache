@@ -28,7 +28,7 @@ final class ApcuCachePool extends BaseCachePool
     protected function doGet(string $key): CacheItem
     {
         $value = apcu_fetch($this->getKey($key), $success);
-        return new CacheItem($this->getKey($key), $value, (bool) $success, $this->defaultTtl);
+        return new CacheItem($key, $value, (bool) $success, $this->defaultTtl);
     }
 
     protected function doHas(string $key): bool

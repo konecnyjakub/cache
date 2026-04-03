@@ -64,7 +64,7 @@ final class SqliteCachePool extends BaseCachePool implements TaggableCachePool
             $value = $this->serializer->unserialize((string) $row[$this->columnValue]); // @phpstan-ignore cast.string
         }
         return new CacheItem(
-            $this->getKey($key),
+            $key,
             $value,
             true,
             tags: $metadata->tags
