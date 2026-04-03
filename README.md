@@ -35,7 +35,7 @@ Advanced usage
 
 ### PSRs
 
-This package implements both PSR-6 and PSR-16. Usage with PSR-16 is described below, all engines and their features have a PSR-6 counterpart in namespace Konecnyjakub\Cache\Pools.
+This package implements both PSR-6 and PSR-16. Usage with PSR-16 is described below, all engines and their features have a PSR-6 counterpart with suffix Pool in namespace Konecnyjakub\Cache\Pools (e.g. for Konecnyjakub\Cache\Simple\MemoryCache there is a PSR-6 equivalent Konecnyjakub\Cache\Pools\MemoryCachePool).
 
 ### Available engines
 
@@ -43,13 +43,13 @@ This package has more engines for caching which are more useful than MemoryCache
 
 ### Advances features
 
-Engines may support one or more advanced features. All advanced features are described in this section and sections about specific engines say which features are support and how are they used with the engine.
+Engines may support one or more advanced features. All advanced features are described in this section and sections about specific engines say which features are supported and how are they used with the engine.
 
 One advance feature is default lifetime of items, it is used when ttl is not specified for an item. Engines provided in this package generally support this, but a few (where it does not make sense) do not.
 
 Another is namespace. Normally, different instances of an engine have access to same values but if you set a namespace for the instances, same keys can have different values in different instances. Do note that not all engines can (fully) use this (and that some may use it automatically).
 
-There is also journal which is used to store various metadata (e.g. expiration and tags) for an item if it is not supported natively by the engine. At the moment, only file based caches support this feature.
+There is also journal which is used to store various metadata (e.g. expiration and tags) for an item if it is not supported natively by the engine. At the moment, only file and sqlite based caches support this feature.
 
 Some engines support tags. Tags for an item can be set when saving the item into cache and then can be used to delete multiple items from cache at the same time. Tags can be arbitrary strings. The engines supporting this implement interface Konecnyjakub\Cache\Simple\TaggableCache (for PSR-16 caches) or Konecnyjakub\Cache\Pools\TaggableCachePool (for PSR-6 cache pools). When invalidating tags with method invalidateTags, all items with at least one of the listed tags, will be deleted.
 
