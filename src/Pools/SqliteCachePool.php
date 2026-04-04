@@ -7,6 +7,7 @@ use Konecnyjakub\Cache\Common\CacheItemMetadata;
 use Konecnyjakub\Cache\Common\ItemValueSerializer;
 use Konecnyjakub\Cache\Common\Journal;
 use Konecnyjakub\Cache\Common\PhpSerializer;
+use Konecnyjakub\Cache\Common\SqliteCacheTableStructure;
 use Konecnyjakub\Cache\Common\SqliteJournal;
 use Pdo\Sqlite;
 use Psr\EventDispatcher\EventDispatcherInterface;
@@ -20,23 +21,29 @@ final class SqliteCachePool extends BaseCachePool implements TaggableCachePool
 {
     private readonly Journal $journal;
 
-    private string $table = "cache_items";
-    private string $columnKey = "key";
-    private string $columnValue = "value";
-
     public function __construct(
         private readonly Sqlite $connection,
         string $namespace = "",
         ?int $defaultTtl = null,
         private readonly ItemValueSerializer $serializer = new PhpSerializer(),
         ?EventDispatcherInterface $eventDispatcher = null,
-        ?Journal $journal = null
+        ?Journal $journal = null,
+        private readonly SqliteCacheTableStructure $structure = new SqliteCacheTableStructure()
     ) {
         $this->connection->exec(
-            "CREATE TABLE IF NOT EXISTS $this->table ($this->columnKey TEXT NOT NULL, $this->columnValue BLOB NULL)"
+            sprintf(
+                "CREATE TABLE IF NOT EXISTS %s (%s TEXT NOT NULL, %s BLOB NULL)",
+                $this->structure->table,
+                $this->structure->columnKey,
+                $this->structure->columnValue
+            )
         );
         $this->connection->exec(
-            "CREATE UNIQUE INDEX IF NOT EXISTS idx_item_key ON $this->table ($this->columnKey)"
+            sprintf(
+                "CREATE UNIQUE INDEX IF NOT EXISTS idx_item_key ON %s (%s)",
+                $this->structure->table,
+                $this->structure->columnKey
+            )
         );
         parent::__construct($namespace, $defaultTtl, $eventDispatcher);
         $this->journal = $journal ?? new SqliteJournal($this->connection);
@@ -56,12 +63,20 @@ final class SqliteCachePool extends BaseCachePool implements TaggableCachePool
     {
         $metadata = $this->journal->get($this->getKey($key));
         $value = null;
-        $stm = $this->connection->prepare("SELECT $this->columnValue FROM $this->table WHERE $this->columnKey = ?");
+        $stm = $this->connection->prepare(
+            sprintf(
+                "SELECT %s FROM %s WHERE %s = ?",
+                $this->structure->columnValue,
+                $this->structure->table,
+                $this->structure->columnKey
+            )
+        );
         if ($stm !== false) {
             $stm->execute([$this->getKey($key)]);
             /** @var array<string, mixed> $row */
             $row = $stm->fetch();
-            $value = $this->serializer->unserialize((string) $row[$this->columnValue]); // @phpstan-ignore cast.string
+            // @phpstan-ignore cast.string
+            $value = $this->serializer->unserialize((string) $row[$this->structure->columnValue]);
         }
         return new CacheItem(
             $key,
@@ -73,7 +88,13 @@ final class SqliteCachePool extends BaseCachePool implements TaggableCachePool
 
     protected function doHas(string $key): bool
     {
-        $stm = $this->connection->prepare("SELECT COUNT(*) FROM $this->table WHERE $this->columnKey = ?");
+        $stm = $this->connection->prepare(
+            sprintf(
+                "SELECT COUNT(*) FROM %s WHERE %s = ?",
+                $this->structure->table,
+                $this->structure->columnKey
+            )
+        );
         if ($stm === false) {
             return false;
         }
@@ -90,14 +111,32 @@ final class SqliteCachePool extends BaseCachePool implements TaggableCachePool
     protected function doClear(): bool
     {
         if ($this->namespace === "") {
-            return $this->connection->exec("DELETE FROM $this->table WHERE $this->columnKey NOT LIKE '%:%'") !== false;
+            return $this->connection->exec(
+                sprintf(
+                    "DELETE FROM %s WHERE %s NOT LIKE '%%:%%'",
+                    $this->structure->table,
+                    $this->structure->columnKey
+                )
+            ) !== false;
         }
-        return $this->connection->exec("DELETE FROM $this->table WHERE $this->columnKey LIKE '%:%'") !== false;
+        return $this->connection->exec(
+            sprintf(
+                "DELETE FROM %s WHERE %s LIKE '%%:%%'",
+                $this->structure->table,
+                $this->structure->columnKey
+            )
+        ) !== false;
     }
 
     protected function doDelete(string $key): bool
     {
-        $stm = $this->connection->prepare("DELETE FROM $this->table WHERE $this->columnKey = ?");
+        $stm = $this->connection->prepare(
+            sprintf(
+                "DELETE FROM %s WHERE %s = ?",
+                $this->structure->table,
+                $this->structure->columnKey
+            )
+        );
         if ($stm === false) {
             return false;
         }
@@ -107,7 +146,12 @@ final class SqliteCachePool extends BaseCachePool implements TaggableCachePool
     protected function doSave(CacheItem $item): bool
     {
         $stm = $this->connection->prepare(
-            "REPLACE INTO $this->table($this->columnKey, $this->columnValue) VALUES(?, ?)"
+            sprintf(
+                "REPLACE INTO %s(%s, %s) VALUES(?, ?)",
+                $this->structure->table,
+                $this->structure->columnKey,
+                $this->structure->columnValue
+            )
         );
         if ($stm === false) {
             return false;

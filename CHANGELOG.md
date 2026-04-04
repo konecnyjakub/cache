@@ -1,5 +1,6 @@
-Version 1.1.0+dev
+Version 1.2.0-dev
 - item keys in CacheItem::getKey() no longer contain namespace for apcu, redis and sqlite cache pools
+- allowed customizing tables and columns names for sqlite caches and journal
 
 Version 1.1.0
 - added sqlite cache and journal

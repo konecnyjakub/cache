@@ -7,27 +7,40 @@ use Pdo\Sqlite;
 
 final class SqliteJournal implements Journal
 {
-    private string $tableTtl = "cache_meta_ttl";
-    private string $columnTtlKey = "key";
-    private string $columnTtl = "ttl";
-
-    private string $tableTags = "cache_meta_tags";
-    private string $columnTagKey = "key";
-    private string $columnTag = "tag";
-
-    public function __construct(private readonly Sqlite $connection)
-    {
+    public function __construct(
+        private readonly Sqlite $connection,
+        private readonly SqliteJournalTablesStructure $structure = new SqliteJournalTablesStructure()
+    ) {
         $this->connection->exec(
-            "CREATE TABLE IF NOT EXISTS $this->tableTtl ($this->columnTtlKey TEXT NOT NULL, $this->columnTtl INT NULL)"
+            sprintf(
+                "CREATE TABLE IF NOT EXISTS %s (%s TEXT NOT NULL, %s INT NULL)",
+                $this->structure->tableTtl,
+                $this->structure->columnTtlKey,
+                $this->structure->columnTtl
+            )
         );
         $this->connection->exec(
-            "CREATE TABLE IF NOT EXISTS $this->tableTags ($this->columnTagKey TEXT NOT NULL, $this->columnTag TEXT NOT NULL)"
+            sprintf(
+                "CREATE TABLE IF NOT EXISTS %s (%s TEXT NOT NULL, %s TEXT NOT NULL)",
+                $this->structure->tableTags,
+                $this->structure->columnTagKey,
+                $this->structure->columnTag
+            )
         );
         $this->connection->exec(
-            "CREATE UNIQUE INDEX IF NOT EXISTS idx_ttl_key ON $this->tableTtl ($this->columnTtlKey)"
+            sprintf(
+                "CREATE UNIQUE INDEX IF NOT EXISTS idx_ttl_key ON %s (%s)",
+                $this->structure->tableTtl,
+                $this->structure->columnTtlKey
+            )
         );
         $this->connection->exec(
-            "CREATE UNIQUE INDEX IF NOT EXISTS idx_tags_key_tag ON $this->tableTags ($this->columnTagKey, $this->columnTag)"
+            sprintf(
+                "CREATE UNIQUE INDEX IF NOT EXISTS idx_tags_key_tag ON %s (%s, %s)",
+                $this->structure->tableTags,
+                $this->structure->columnTagKey,
+                $this->structure->columnTag
+            )
         );
     }
 
@@ -35,25 +48,35 @@ final class SqliteJournal implements Journal
     {
         $ttl = null;
         $ttlStm = $this->connection->prepare(
-            "SELECT $this->columnTtl FROM $this->tableTtl WHERE $this->columnTtlKey = ?"
+            sprintf(
+                "SELECT %s FROM %s WHERE %s = ?",
+                $this->structure->columnTtl,
+                $this->structure->tableTtl,
+                $this->structure->columnTtlKey
+            )
         );
         if ($ttlStm !== false) {
             $ttlStm->execute([$key,]);
             while ($row = $ttlStm->fetch()) {
                 /** @var array<string, int|null> $row */
-                $ttl = $row[$this->columnTtl];
+                $ttl = $row[$this->structure->columnTtl];
             }
         }
 
         $tags = [];
         $tagsStm = $this->connection->prepare(
-            "SELECT $this->columnTag FROM $this->tableTags WHERE $this->columnTagKey = ?"
+            sprintf(
+                "SELECT %s FROM %s WHERE %s = ?",
+                $this->structure->columnTag,
+                $this->structure->tableTags,
+                $this->structure->columnTagKey
+            )
         );
         if ($tagsStm !== false) {
             $tagsStm->execute([$key,]);
             while ($row = $tagsStm->fetch()) {
                 /** @var array<string, string> $row */
-                $tags[] = $row[$this->columnTag];
+                $tags[] = $row[$this->structure->columnTag];
             }
         }
 
@@ -63,20 +86,36 @@ final class SqliteJournal implements Journal
     public function set(string $key, CacheItemMetadata $metadata): bool
     {
         $ttlStm = $this->connection->prepare(
-            "REPLACE INTO $this->tableTtl($this->columnTtlKey, $this->columnTtl) VALUES(?, ?)"
+            sprintf(
+                "REPLACE INTO %s(%s, %s) VALUES(?, ?)",
+                $this->structure->tableTtl,
+                $this->structure->columnTtlKey,
+                $this->structure->columnTtl
+            )
         );
         $result = ($ttlStm !== false);
         if ($ttlStm !== false) {
             $result = $result && $ttlStm->execute([$key, $metadata->expiresAt]);
         }
 
-        $tagsDeleteStm = $this->connection->prepare("DELETE FROM $this->tableTags WHERE $this->columnTagKey = ?");
+        $tagsDeleteStm = $this->connection->prepare(
+            sprintf(
+                "DELETE FROM %s WHERE %s = ?",
+                $this->structure->tableTags,
+                $this->structure->columnTagKey
+            )
+        );
         $result = $result && ($tagsDeleteStm !== false);
         if ($tagsDeleteStm !== false) {
             $result = $result && $tagsDeleteStm->execute([$key,]);
         }
         $tagInsertStm = $this->connection->prepare(
-            "INSERT INTO $this->tableTags($this->columnTagKey, $this->columnTag) VALUES(?, ?)"
+            sprintf(
+                "INSERT INTO %s(%s, %s) VALUES(?, ?)",
+                $this->structure->tableTags,
+                $this->structure->columnTagKey,
+                $this->structure->columnTag
+            )
         );
         $result = $result && ($tagInsertStm !== false);
         if ($tagInsertStm !== false) {
@@ -95,9 +134,9 @@ final class SqliteJournal implements Journal
             $params[] = $key;
         }
 
-        $query = "DELETE FROM $this->tableTtl";
+        $query = "DELETE FROM {$this->structure->tableTtl}";
         if ($key !== null) {
-            $query .= " WHERE $this->columnTtlKey = ?";
+            $query .= " WHERE {$this->structure->columnTtlKey} = ?";
         }
         $ttlStm = $this->connection->prepare($query);
         $result = ($ttlStm !== false);
@@ -105,9 +144,9 @@ final class SqliteJournal implements Journal
             $result = $result && $ttlStm->execute($params);
         }
 
-        $query = "DELETE FROM $this->tableTags";
+        $query = "DELETE FROM {$this->structure->tableTags}";
         if ($key !== null) {
-            $query .= " WHERE $this->columnTagKey = ?";
+            $query .= " WHERE {$this->structure->columnTagKey} = ?";
         }
         $tagsStm = $this->connection->prepare($query);
         $result = $result && ($tagsStm !== false);
@@ -125,15 +164,19 @@ final class SqliteJournal implements Journal
         }
 
         $stm = $this->connection->prepare(
-            "SELECT $this->columnTagKey FROM $this->tableTags WHERE $this->columnTag IN (?" .
-            str_repeat(", ?", count($tags) - 1) .
-            ")"
+            sprintf(
+                "SELECT %s FROM %s WHERE %s IN (?%s)",
+                $this->structure->columnTagKey,
+                $this->structure->tableTags,
+                $this->structure->columnTag,
+                str_repeat(", ?", count($tags) - 1)
+            )
         );
         if ($stm !== false) {
             $stm->execute($tags);
             while ($row = $stm->fetch()) {
                 /** @var array<string, string> $row */
-                yield $row[$this->columnTagKey];
+                yield $row[$this->structure->columnTagKey];
             }
         }
     }

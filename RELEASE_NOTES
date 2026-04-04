@@ -1,3 +1,5 @@
 A new version of Cache is out. Item keys in CacheItem::getKey() no longer contain namespace for apcu, redis and sqlite cache pools.
 
+It is now possible to use custom names for tables and columns for sqlite caches and journal.
+
 For complete list of changes since previous version, see CHANGELOG.md.
