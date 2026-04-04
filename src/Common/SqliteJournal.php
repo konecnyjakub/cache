@@ -5,11 +5,11 @@ namespace Konecnyjakub\Cache\Common;
 
 use Pdo\Sqlite;
 
-final class SqliteJournal implements Journal
+final readonly class SqliteJournal implements Journal
 {
     public function __construct(
-        private readonly Sqlite $connection,
-        private readonly SqliteJournalTablesStructure $structure = new SqliteJournalTablesStructure()
+        private Sqlite $connection,
+        private SqliteJournalTablesStructure $structure = new SqliteJournalTablesStructure()
     ) {
         $this->connection->exec(
             sprintf(
