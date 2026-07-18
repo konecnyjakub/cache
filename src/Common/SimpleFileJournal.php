@@ -46,7 +46,7 @@ final readonly class SimpleFileJournal implements Journal
             $content .= self::TEXT_EXPIRES_AT . $metadata->expiresAt . "\n";
         }
         if (count($metadata->tags) > 0) {
-            $content .= self::TEXT_TAGS . join(",", $metadata->tags) . "\n";
+            $content .= self::TEXT_TAGS . implode(",", $metadata->tags) . "\n";
         }
         return $content === "" ?
             $this->clear($key) : (bool) file_put_contents($this->getFilename($key), $content, LOCK_EX);
