@@ -18,6 +18,6 @@ final readonly class ItemKeyValidator
     public function isKeysValid(iterable $keys): bool
     {
         $keys = $keys instanceof Traversable ? iterator_to_array($keys) : $keys;
-        return array_all($keys, fn (mixed $key): bool => $this->isKeyValid($key));
+        return array_all($keys, $this->isKeyValid(...));
     }
 }
