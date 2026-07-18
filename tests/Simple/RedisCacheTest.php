@@ -209,31 +209,31 @@ final class RedisCacheTest extends TestCase
     public function testExceptions(): void
     {
         $cache = new RedisCache($this->client);
-        $this->assertThrowsException(function () use ($cache) {
+        $this->assertThrowsException(static function () use ($cache) {
             $cache->get("{");
         }, InvalidKeyException::class);
 
-        $this->assertThrowsException(function () use ($cache) {
+        $this->assertThrowsException(static function () use ($cache) {
             $cache->set("{", "abc");
         }, InvalidKeyException::class);
 
-        $this->assertThrowsException(function () use ($cache) {
+        $this->assertThrowsException(static function () use ($cache) {
             $cache->delete("{");
         }, InvalidKeyException::class);
 
-        $this->assertThrowsException(function () use ($cache) {
+        $this->assertThrowsException(static function () use ($cache) {
             $cache->getMultiple(["one", "{"]);
         }, InvalidKeyException::class);
 
-        $this->assertThrowsException(function () use ($cache) {
+        $this->assertThrowsException(static function () use ($cache) {
             $cache->setMultiple(["{" => "abc", ]);
         }, InvalidKeyException::class);
 
-        $this->assertThrowsException(function () use ($cache) {
+        $this->assertThrowsException(static function () use ($cache) {
             $cache->deleteMultiple(["one", "{"]);
         }, InvalidKeyException::class);
 
-        $this->assertThrowsException(function () use ($cache) {
+        $this->assertThrowsException(static function () use ($cache) {
             $cache->has("{");
         }, InvalidKeyException::class);
     }

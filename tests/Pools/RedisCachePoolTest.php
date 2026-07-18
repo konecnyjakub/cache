@@ -267,23 +267,23 @@ final class RedisCachePoolTest extends TestCase
     public function testExceptions(): void
     {
         $pool = new RedisCachePool($this->client);
-        $this->assertThrowsException(function () use ($pool) {
+        $this->assertThrowsException(static function () use ($pool) {
             $pool->getItem("{");
         }, InvalidKeyException::class);
 
-        $this->assertThrowsException(function () use ($pool) {
+        $this->assertThrowsException(static function () use ($pool) {
             $pool->deleteItem("{");
         }, InvalidKeyException::class);
 
-        $this->assertThrowsException(function () use ($pool) {
+        $this->assertThrowsException(static function () use ($pool) {
             $pool->getItems(["one", "{"]);
         }, InvalidKeyException::class);
 
-        $this->assertThrowsException(function () use ($pool) {
+        $this->assertThrowsException(static function () use ($pool) {
             $pool->deleteItems(["one", "{"]);
         }, InvalidKeyException::class);
 
-        $this->assertThrowsException(function () use ($pool) {
+        $this->assertThrowsException(static function () use ($pool) {
             $pool->hasItem("{");
         }, InvalidKeyException::class);
     }

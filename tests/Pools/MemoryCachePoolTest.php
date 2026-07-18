@@ -262,23 +262,23 @@ final class MemoryCachePoolTest extends TestCase
     public function testExceptions(): void
     {
         $cache = new MemoryCachePool();
-        $this->assertThrowsException(function () use ($cache) {
+        $this->assertThrowsException(static function () use ($cache) {
             $cache->getItem("{");
         }, InvalidKeyException::class);
 
-        $this->assertThrowsException(function () use ($cache) {
+        $this->assertThrowsException(static function () use ($cache) {
             $cache->deleteItem("{");
         }, InvalidKeyException::class);
 
-        $this->assertThrowsException(function () use ($cache) {
+        $this->assertThrowsException(static function () use ($cache) {
             $cache->getItems(["one", "{"]);
         }, InvalidKeyException::class);
 
-        $this->assertThrowsException(function () use ($cache) {
+        $this->assertThrowsException(static function () use ($cache) {
             $cache->deleteItems(["one", "{"]);
         }, InvalidKeyException::class);
 
-        $this->assertThrowsException(function () use ($cache) {
+        $this->assertThrowsException(static function () use ($cache) {
             $cache->hasItem("{");
         }, InvalidKeyException::class);
     }

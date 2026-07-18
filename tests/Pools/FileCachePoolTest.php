@@ -285,28 +285,28 @@ final class FileCachePoolTest extends TestCase
 
     public function testExceptions(): void
     {
-        $this->assertThrowsException(function () {
+        $this->assertThrowsException(static function () {
             new FileCachePool("/non-existing");
         }, InvalidDirectoryException::class);
 
         $pool = new FileCachePool(__DIR__, "fileCache");
-        $this->assertThrowsException(function () use ($pool) {
+        $this->assertThrowsException(static function () use ($pool) {
             $pool->getItem("{");
         }, InvalidKeyException::class);
 
-        $this->assertThrowsException(function () use ($pool) {
+        $this->assertThrowsException(static function () use ($pool) {
             $pool->deleteItem("{");
         }, InvalidKeyException::class);
 
-        $this->assertThrowsException(function () use ($pool) {
+        $this->assertThrowsException(static function () use ($pool) {
             $pool->getItems(["one", "{"]);
         }, InvalidKeyException::class);
 
-        $this->assertThrowsException(function () use ($pool) {
+        $this->assertThrowsException(static function () use ($pool) {
             $pool->deleteItems(["one", "{"]);
         }, InvalidKeyException::class);
 
-        $this->assertThrowsException(function () use ($pool) {
+        $this->assertThrowsException(static function () use ($pool) {
             $pool->hasItem("{");
         }, InvalidKeyException::class);
     }
