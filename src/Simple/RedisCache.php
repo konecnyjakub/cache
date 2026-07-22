@@ -39,7 +39,7 @@ final class RedisCache extends BaseCache
 
     protected function doSet(string $key, mixed $value, DateInterval|int|null $ttl, array $tags = []): bool
     {
-        if ((is_int($ttl) && $ttl < 0)) {
+        if (is_int($ttl) && $ttl < 0) {
             return true;
         }
         $options = [];
